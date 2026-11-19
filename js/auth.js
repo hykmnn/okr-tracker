@@ -1,6 +1,6 @@
-// Đăng nhập Microsoft (MSAL redirect flow — giống TA dashboard; popup hay bị
-// trình duyệt chặn). Token SharePoint delegated: người dùng chỉ đọc/ghi được
-// những gì chính họ có quyền trên site.
+// Microsoft sign-in (MSAL redirect flow, same as the TA dashboard; popups are
+// often blocked). Delegated SharePoint token: users can only read/write what
+// they themselves have access to on the site.
 import { CONFIG } from "./config.js";
 
 const MSAL_CDN = "https://cdn.jsdelivr.net/npm/@azure/msal-browser@3.30.0/lib/msal-browser.min.js";
@@ -13,7 +13,7 @@ function loadMsal() {
     const s = document.createElement("script");
     s.src = MSAL_CDN;
     s.onload = () => resolve();
-    s.onerror = () => reject(new Error("Không tải được thư viện đăng nhập Microsoft"));
+    s.onerror = () => reject(new Error("Could not load the Microsoft sign-in library"));
     document.head.appendChild(s);
   });
 }
@@ -45,12 +45,12 @@ export async function signOut() {
 
 export async function getToken() {
   const account = app?.getAllAccounts()[0];
-  if (!account) throw new Error("Chưa đăng nhập");
+  if (!account) throw new Error("Not signed in");
   try {
     return (await app.acquireTokenSilent({ scopes: SCOPES, account })).accessToken;
   } catch {
     await app.acquireTokenRedirect({ scopes: SCOPES, account });
-    return new Promise(() => {}); // trang sẽ chuyển hướng
+    return new Promise(() => {}); // page will redirect
   }
 }
 

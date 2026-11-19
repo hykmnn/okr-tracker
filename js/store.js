@@ -1,7 +1,7 @@
-// Kho dữ liệu dạng "collection/doc" (cùng API mà UI đang dùng: collection().
-// onSnapshot/add/doc(), doc().set/update/delete) chạy trên SharePoint list.
-// Cache trong bộ nhớ: ghi xong cập nhật cache + báo listener ngay; dữ liệu
-// người khác sửa được kéo về theo chu kỳ CONFIG.pollMs.
+// "collection/doc" data store (same API the UI uses: collection().
+// onSnapshot/add/doc(), doc().set/update/delete) backed by SharePoint lists.
+// In-memory cache: writes update the cache and notify listeners immediately;
+// other people's edits are pulled every CONFIG.pollMs.
 import { CONFIG } from "./config.js";
 
 export class PermissionError extends Error {}
@@ -135,7 +135,7 @@ export function createStore({ demo = false, getToken } = {}) {
       async update(patch) {
         const m = await ensure(col);
         const cur = m.get(id);
-        if (!cur) throw new Error("Không tìm thấy dữ liệu để cập nhật — tải lại trang");
+        if (!cur) throw new Error("Item to update not found. Reload the page.");
         const body = { ...cur.data, ...clone(patch) };
         await api.save(col, cur.itemId, body);
         m.set(id, { itemId: cur.itemId, data: body }); emit(col);
@@ -164,7 +164,7 @@ export function createStore({ demo = false, getToken } = {}) {
     };
   }
 
-  // Kéo dữ liệu mới định kỳ (khi tab đang hiển thị) + khi quay lại tab.
+  // Poll for fresh data periodically (while visible) and when the tab regains focus.
   const pollAll = () => Object.keys(listeners).forEach((c) => refresh(c));
   setInterval(() => { if (document.visibilityState === "visible") pollAll(); }, CONFIG.pollMs);
   document.addEventListener("visibilitychange", () => { if (document.visibilityState === "visible") pollAll(); });
