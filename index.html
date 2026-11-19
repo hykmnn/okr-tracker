@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="vi">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -244,7 +244,7 @@ button.istat:hover{border-color:var(--blue)}
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
 
 [hidden]{display:none!important}
-/* landing (đăng nhập) + user chip — cùng format TA Performance Dashboard */
+/* landing (sign-in) + user chip — same format as TA Performance Dashboard */
 .landing{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px 0}
 .landing-card{max-width:560px;text-align:center}
 .landing-logo{width:76px;height:64px;margin:0 auto 18px;background:var(--blue);border-radius:var(--r2);display:flex;align-items:center;justify-content:center}
@@ -271,10 +271,10 @@ button.istat:hover{border-color:var(--blue)}
   <div class="landing-card">
     <div class="landing-logo"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 57 35" fill="none"><path d="M56.8154 0V35H29.4355V26.25H48.3164V7.9541H37.8486V13.125H43.4854V21.4775H29.4355V0H56.8154Z" fill="#FFFFFF"/><path d="M27.3799 0V21.4775H13.2871V13.125H18.9238V7.9541H8.45508V26.25H27.3799V35H0V0H27.3799Z" fill="#FFFFFF"/></svg></div>
     <p class="landing-kicker">EASTGATE SOFTWARE · OKR · KPI · INITIATIVES</p>
-    <h2>Cả công ty cùng nhìn một bộ mục tiêu.</h2>
-    <p class="landing-desc">Cây OKR từ Company tới từng team, check-in tiến độ key result, KPI vận hành theo tháng và các initiative đang chạy, cập nhật ngay khi có người ghi nhận.</p>
+    <h2>One set of goals for the whole company.</h2>
+    <p class="landing-desc">The OKR tree from Company down to every team, key result check-ins, monthly operating KPIs and running initiatives, updated as soon as anyone records progress.</p>
     <button id="btn-signin" class="btn-signin">Sign in with Microsoft</button>
-    <p class="landing-note">Dữ liệu lưu trên SharePoint site ORG HR Admin. Tài khoản Eastgate của bạn cần có quyền truy cập site đó.</p>
+    <p class="landing-note">Data is stored on the ORG HR Admin SharePoint site. Your Eastgate account needs access to that site.</p>
     <p id="landing-error" class="landing-error" hidden></p>
   </div>
 </section>
@@ -283,27 +283,27 @@ button.istat:hover{border-color:var(--blue)}
     <div class="brand">
       <div class="brand-badge"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 57 35" fill="none"><path d="M56.8154 0V35H29.4355V26.25H48.3164V7.9541H37.8486V13.125H43.4854V21.4775H29.4355V0H56.8154Z" fill="#FFFFFF"/><path d="M27.3799 0V21.4775H13.2871V13.125H18.9238V7.9541H8.45508V26.25H27.3799V35H0V0H27.3799Z" fill="#FFFFFF"/></svg></div>
       <div>
-        <h1>OKR <select id="cycle" class="cycle-sel" aria-label="Chọn chu kỳ"></select></h1>
+        <h1>OKR <select id="cycle" class="cycle-sel" aria-label="Select cycle"></select></h1>
         <div class="sub" id="cycle-sub">EASTGATE SOFTWARE · CYCLE JAN 01 → DEC 31</div>
       </div>
     </div>
     <div class="spacer"></div>
     <button class="btn primary" id="btn-new" hidden>＋ Objective</button>
-    <div class="user-chip" id="user-chip" hidden><span class="av" id="user-av"></span><span class="nm"><b id="user-name"></b></span><button class="btn ghost" id="btn-signout" title="Đăng xuất">Đăng xuất</button></div>
+    <div class="user-chip" id="user-chip" hidden><span class="av" id="user-av"></span><span class="nm"><b id="user-name"></b></span><button class="btn ghost" id="btn-signout" title="Sign out">Sign out</button></div>
   </header>
 
-  <div class="notice" id="notice"><span class="dot"></span><span id="notice-text">Đang kết nối dữ liệu…</span></div>
+  <div class="notice" id="notice"><span class="dot"></span><span id="notice-text">Connecting to data…</span></div>
 
   <div class="summary" id="summary">
     <section>
       <div class="eyebrow">Objectives</div>
       <div class="overall"><div class="big num" id="s-count">–</div><div class="pct num" id="s-pct">0%</div></div>
-      <div class="hero-bar" title="Vạch đen = tiến độ kỳ vọng theo ngày"><i id="s-bar" style="width:0"></i><b id="s-mark" style="left:0"></b></div>
+      <div class="hero-bar" title="Black marker = expected progress to date"><i id="s-bar" style="width:0"></i><b id="s-mark" style="left:0"></b></div>
       <div class="meta-list" id="s-meta"></div>
     </section>
     <section>
       <div class="eyebrow">Goal status</div>
-      <div class="ring-row"><svg id="s-ring" width="92" height="92" viewBox="0 0 92 92" aria-label="Phân bổ trạng thái"></svg><div class="legend" id="s-legend"></div></div>
+      <div class="ring-row"><svg id="s-ring" width="92" height="92" viewBox="0 0 92 92" aria-label="Status breakdown"></svg><div class="legend" id="s-legend"></div></div>
     </section>
     <section>
       <div class="eyebrow">Confidence · key results</div>
@@ -324,25 +324,25 @@ button.istat:hover{border-color:var(--blue)}
           <button role="tab" id="tab-kpi" aria-selected="false" data-tab="kpi">KPIs<span class="count" id="n-kpi"></span></button>
         </div>
         <div class="spacer" style="flex:1"></div>
-        <button class="btn ghost" id="btn-expand">Mở tất cả</button>
+        <button class="btn ghost" id="btn-expand">Expand all</button>
         <button class="btn" id="btn-new-kpi" hidden>＋ KPI</button>
       </div>
       <div class="filters">
-        <input class="search" id="q" type="search" placeholder="Tìm objective, key result, initiative, owner…" aria-label="Tìm kiếm">
-        <select class="sel" id="f-team" aria-label="Lọc theo team"><option value="">Tất cả team</option></select>
+        <input class="search" id="q" type="search" placeholder="Search objectives, key results, initiatives, owners…" aria-label="Search">
+        <select class="sel" id="f-team" aria-label="Filter by team"><option value="">All teams</option></select>
         <div class="chips" id="f-status"></div>
       </div>
       <div id="view-okr">
-        <div class="intro"><b>OKR</b> = thay đổi muốn tạo ra trong kỳ. <b>Key result</b> đo kết quả và quyết định % tiến độ. <b>Initiative</b> là việc cần làm để đẩy KR, chỉ theo dõi trạng thái, không tính vào %.</div>
+        <div class="intro"><b>OKR</b> = the change you want to make this cycle. <b>Key results</b> measure outcomes and drive the progress %. <b>Initiatives</b> are the work that moves a KR; only their status is tracked and they do not count toward %.</div>
         <div class="tree-head cols eyebrow">
           <span>Objective / Key result / Initiative</span><span class="c-owner">Owner</span><span class="c-dates">Timeline</span><span>Progress</span><span class="c-status">Status</span><span></span>
         </div>
         <div id="tree"></div>
       </div>
       <div id="view-kpi" hidden>
-        <div class="intro"><b>KPI</b> = chỉ số vận hành cần giữ ổn định (doanh thu tháng, tỷ lệ nghỉ việc, utilization…). KPI không có hạn kết thúc, chỉ cần nằm trong ngưỡng. Khi KPI ra khỏi ngưỡng lâu, hãy đặt một OKR để cải thiện nó.</div>
+        <div class="intro"><b>KPI</b> = an operating metric to keep healthy (monthly revenue, attrition, utilization…). KPIs have no end date; they just need to stay within threshold. When a KPI stays off-track for a while, set an OKR to improve it.</div>
         <div class="tree-head kcols eyebrow">
-          <span>KPI</span><span class="c-owner">Owner</span><span class="c-spark">6 kỳ gần nhất</span><span>Mới nhất</span><span class="c-health">Health</span><span></span>
+          <span>KPI</span><span class="c-owner">Owner</span><span class="c-spark">Last 6 periods</span><span>Latest</span><span class="c-health">Health</span><span></span>
         </div>
         <div id="kpis"></div>
       </div>
@@ -354,7 +354,7 @@ button.istat:hover{border-color:var(--blue)}
         <div class="teams" id="teams"></div>
       </div>
       <div class="panel">
-        <div class="panel-head"><h2>Check-in gần đây</h2></div>
+        <div class="panel-head"><h2>Recent check-ins</h2></div>
         <ul class="feed" id="feed"></ul>
       </div>
     </aside>
@@ -380,12 +380,12 @@ import { createStore, PermissionError } from "./js/store.js";
     high:{label:"High",color:"var(--ok)"},
     medium:{label:"Medium",color:"var(--warn)"},
     low:{label:"Low",color:"var(--bad)"},
-    none:{label:"Chưa báo",color:"var(--idle)"},
+    none:{label:"Not set",color:"var(--idle)"},
   };
   const LEVELS = ["Company","Department","Team","Personal"];
-  const ISTAT = { todo:"To do", doing:"Đang làm", done:"Xong", blocked:"Bị chặn" };
+  const ISTAT = { todo:"To do", doing:"In progress", done:"Done", blocked:"Blocked" };
   const ISTAT_NEXT = { todo:"doing", doing:"done", done:"todo", blocked:"doing" };
-  const HEALTH = { ok:"Đạt", warn:"Sát ngưỡng", bad:"Ngoài ngưỡng", none:"Chưa có số" };
+  const HEALTH = { ok:"On target", warn:"Near threshold", bad:"Off target", none:"No data" };
 
   const state = { all: [], cycle: (() => { try { return localStorage.getItem("okr.cycle") || String(new Date().getFullYear()); } catch { return String(new Date().getFullYear()); } })(), objectives: [], checkins: [], kpis: [], tab:"okr", loaded:false, db:null, canWrite:false,
     q:"", team:"", status:"", opened:new Set(), collapsed:new Set(), allOpen:false };
@@ -415,7 +415,7 @@ import { createStore, PermissionError } from "./js/store.js";
   }
   const isPh = k => /\[\?\]/.test(String(k.title||""));
   const childrenOf = id => state.objectives.filter(o => (o.parentId||"") === (id||"")).sort((a,b)=>(a.order??0)-(b.order??0)||String(a.title).localeCompare(b.title));
-  // Tỉ trọng: ô có số giữ nguyên, ô trống chia đều phần còn lại tới 100, rồi chuẩn hoá tổng = 1.
+  // Weights: filled values are kept, blanks split the remainder up to 100 equally, then normalised to sum = 1.
   const hasW = w => w !== null && w !== undefined && w !== "" && isFinite(+w) && +w >= 0;
   function normWeights(ws){
     if (!ws.length) return [];
@@ -424,7 +424,7 @@ import { createStore, PermissionError } from "./js/store.js";
     const raw = ws.map(w => hasW(w) ? +w : rest), tot = raw.reduce((a,b)=>a+b,0);
     return tot > 0 ? raw.map(r=>r/tot) : ws.map(()=>1/ws.length);
   }
-  // Các thành phần tạo nên % của objective: KR + objective con, kèm tỉ trọng đã chuẩn hoá.
+  // Components of an objective's %: KRs + child objectives, with normalised weights.
   function contributors(o){
     const items = [...(o.krs||[]).map(k=>({id:k.id, kind:"kr", ref:k, w:k.weight})),
                    ...childrenOf(o.id).map(c=>({id:c.id, kind:"obj", ref:c, w:c.weight}))];
@@ -440,7 +440,7 @@ import { createStore, PermissionError } from "./js/store.js";
     return cs.reduce((a,c)=>a + c.share * Math.min(1, c.kind==="kr" ? krPct(c.ref) : objPct(c.ref, seen)), 0);
   }
   function rootShare(id){ const roots = childrenOf(""); if (!roots.some(r=>hasW(r.weight))) return null; const ns = normWeights(roots.map(r=>r.weight)); const i = roots.findIndex(r=>r.id===id); return i<0 ? null : ns[i]; }
-  const wtTag = sh => sh===null ? "" : `<span class="wt" title="Tỉ trọng trong objective cha">${fmtPct(sh)}</span>`;
+  const wtTag = sh => sh===null ? "" : `<span class="wt" title="Weight within parent objective">${fmtPct(sh)}</span>`;
   function expected(o){
     const s = new Date((o.start||cyStart())+"T00:00:00"), e = new Date((o.end||cyEnd())+"T23:59:59");
     return Math.max(0, Math.min(1, (today()-s)/(e-s)));
@@ -466,13 +466,13 @@ import { createStore, PermissionError } from "./js/store.js";
 
   function renderNotice(){
     const n = $("#notice"), t = $("#notice-text");
-    if (!state.db){ n.className="notice warn"; t.textContent = state.loaded ? "Không tải được dữ liệu từ SharePoint — thử tải lại trang." : "Đang kết nối dữ liệu…"; return; }
+    if (!state.db){ n.className="notice warn"; t.textContent = state.loaded ? "Could not load data from SharePoint. Try reloading the page." : "Connecting to data…"; return; }
     n.className = "notice";
     const last = state.checkins[0];
     const samples = state.all.filter(o=>o.sample).length + state.kpis.filter(k=>k.sample).length;
-    t.innerHTML = (last ? `Cập nhật lần cuối ${esc(timeAgo(last.at))} · ` : "") +
+    t.innerHTML = (last ? `Last updated ${esc(timeAgo(last.at))} · ` : "") +
       `${state.objectives.length} objectives · ${state.objectives.reduce((a,o)=>a+(o.krs||[]).length,0)} key results · ${state.kpis.length} KPI` +
-      (samples && state.canWrite ? ` · <button class="btn ghost" id="btn-clear-sample" style="padding:2px 6px;font-size:12px;color:var(--warn)">Xoá ${samples} mục mẫu</button>` : "");
+      (samples && state.canWrite ? ` · <button class="btn ghost" id="btn-clear-sample" style="padding:2px 6px;font-size:12px;color:var(--warn)">Delete ${samples} sample items</button>` : "");
     const b = $("#btn-clear-sample"); if (b) b.onclick = clearSamples;
   }
 
@@ -485,15 +485,15 @@ import { createStore, PermissionError } from "./js/store.js";
     const exp = Math.max(0,Math.min(1,(today()-d0)/(d1-d0)));
     const cyDays = Math.round((d1-d0)/864e5);
     const dayN = Math.ceil((today()-d0)/864e5);
-    const phase = dayN < 1 ? `BẮT ĐẦU SAU ${Math.ceil((d0-today())/864e5)} NGÀY` : dayN > cyDays ? "ĐÃ KẾT THÚC" : `DAY ${dayN} OF ${cyDays}`;
+    const phase = dayN < 1 ? `STARTS IN ${Math.ceil((d0-today())/864e5)} DAYS` : dayN > cyDays ? "ENDED" : `DAY ${dayN} OF ${cyDays}`;
     $("#cycle-sub").textContent = `EASTGATE SOFTWARE · ${state.cycle} · JAN 01 → DEC 31 · ${phase}`;
     $("#s-count").textContent = objs.length;
     $("#s-pct").textContent = fmtPct(overall);
     $("#s-bar").style.width = (overall*100)+"%";
     $("#s-mark").style.left = `calc(${exp*100}% - 1px)`;
     const byLevel = LEVELS.map(l => [l, objs.filter(o=>o.level===l).length]).filter(x=>x[1]);
-    $("#s-meta").innerHTML = (byLevel.length ? `<span>${byLevel.map(([l,n])=>`${n} ${l}`).join(" · ")}</span>` : `<span>Chưa có objective</span>`) +
-      `<span>Kỳ vọng hôm nay: <b class="num">${fmtPct(exp)}</b></span>`;
+    $("#s-meta").innerHTML = (byLevel.length ? `<span>${byLevel.map(([l,n])=>`${n} ${l}`).join(" · ")}</span>` : `<span>No objectives yet</span>`) +
+      `<span>Expected today: <b class="num">${fmtPct(exp)}</b></span>`;
 
     const counts = Object.fromEntries(Object.keys(STATUS).map(k=>[k,0]));
     objs.forEach(o => counts[objStatus(o)]++);
@@ -519,20 +519,20 @@ import { createStore, PermissionError } from "./js/store.js";
     const kpiBad = state.kpis.filter(k=>kpiHealth(k)==="bad").length;
     const stale = krs.filter(k=>!k.updatedAt || Date.now()-new Date(k.updatedAt).getTime() > 30*864e5).length;
     $("#s-pace").innerHTML = `
-      <div class="row"><span>Objective ≥ tiến độ kỳ vọng</span><b>${ahead}/${total}</b></div>
-      <div class="row"><span>Check-in 7 ngày qua</span><b>${ci7}</b></div>
-      <div class="row"><span>KR chưa cập nhật &gt;30 ngày</span><b style="color:${stale?'var(--warn)':'var(--ink)'}">${stale}</b></div>
-      <div class="row"><span>Initiative xong</span><b>${initsDone}/${inits.length}</b></div>
-      <div class="row"><span>KPI ngoài ngưỡng</span><b style="color:${kpiBad?'var(--bad)':'var(--ink)'}">${kpiBad}/${state.kpis.length}</b></div>`;
+      <div class="row"><span>Objectives ≥ expected progress</span><b>${ahead}/${total}</b></div>
+      <div class="row"><span>Check-ins, last 7 days</span><b>${ci7}</b></div>
+      <div class="row"><span>KRs not updated &gt;30 days</span><b style="color:${stale?'var(--warn)':'var(--ink)'}">${stale}</b></div>
+      <div class="row"><span>Initiatives done</span><b>${initsDone}/${inits.length}</b></div>
+      <div class="row"><span>KPIs off target</span><b style="color:${kpiBad?'var(--bad)':'var(--ink)'}">${kpiBad}/${state.kpis.length}</b></div>`;
   }
 
   function teamsList(){ return [...new Set([...state.objectives, ...state.kpis].map(o=>o.team).filter(Boolean))].sort(); }
 
   function renderFilters(){
     const sel = $("#f-team"), cur = state.team;
-    sel.innerHTML = `<option value="">Tất cả team</option>` + teamsList().map(t=>`<option ${t===cur?"selected":""}>${esc(t)}</option>`).join("");
+    sel.innerHTML = `<option value="">All teams</option>` + teamsList().map(t=>`<option ${t===cur?"selected":""}>${esc(t)}</option>`).join("");
     $("#f-status").hidden = state.tab !== "okr";
-    $("#f-status").innerHTML = [["","Tất cả"],...Object.keys(STATUS).map(k=>[k,STATUS[k].label])]
+    $("#f-status").innerHTML = [["","All"],...Object.keys(STATUS).map(k=>[k,STATUS[k].label])]
       .map(([k,l])=>`<button class="chip" data-st="${k}" aria-pressed="${state.status===k}">${l}</button>`).join("");
   }
 
@@ -556,9 +556,9 @@ import { createStore, PermissionError } from "./js/store.js";
 
   function renderTree(){
     const el = $("#tree");
-    if (!state.loaded){ el.innerHTML = `<div class="empty">Đang tải OKR…</div>`; return; }
+    if (!state.loaded){ el.innerHTML = `<div class="empty">Loading OKRs…</div>`; return; }
     if (!state.objectives.length){
-      el.innerHTML = `<div class="empty"><h3>Chưa có OKR nào</h3>${state.canWrite ? `Bấm <b>＋ Objective</b> để tạo Company OKR đầu tiên, rồi thêm objective con cho từng phòng ban và team.` : `Khi admin tạo OKR, cây mục tiêu sẽ hiện ở đây.`}</div>`; return;
+      el.innerHTML = `<div class="empty"><h3>No OKRs yet</h3>${state.canWrite ? `Click <b>＋ Objective</b> to create the first Company OKR, then add child objectives for each department and team.` : `When an admin creates OKRs, the goal tree will appear here.`}</div>`; return;
     }
     const rows = [];
     const walk = (o, depth, seen) => {
@@ -571,16 +571,16 @@ import { createStore, PermissionError } from "./js/store.js";
       const hasKids = kids.length || krs.length || inits.length;
       rows.push(`<div class="row cols lvl-${Math.min(depth,2)}">
         <div class="title-cell" style="padding-left:${depth*22}px">
-          <button class="caret ${hasKids?"":"blank"}" data-toggle="${o.id}" aria-expanded="${open}" aria-label="Mở/đóng">${caretSvg}</button>
+          <button class="caret ${hasKids?"":"blank"}" data-toggle="${o.id}" aria-expanded="${open}" aria-label="Expand/collapse">${caretSvg}</button>
           ${ring(p, STATUS[st].color)}
           <div class="t-main"><div class="t-name">${esc(o.title)}</div>
-            <div class="t-sub">${wtTag(o.parentId ? shareOf(state.objectives.find(x=>x.id===o.parentId), o.id) : rootShare(o.id))}<span class="tag">${esc(o.level||"Objective")}</span>${o.team?`<span>${esc(o.team)}</span>`:""}${o.sample?`<span class="tag sample">Mẫu</span>`:""}${krs.length?`<span>${krs.length} KR</span>`:""}${inits.length?`<span>· ${inits.filter(i=>i.status==="done").length}/${inits.length} initiative xong</span>`:""}</div></div>
+            <div class="t-sub">${wtTag(o.parentId ? shareOf(state.objectives.find(x=>x.id===o.parentId), o.id) : rootShare(o.id))}<span class="tag">${esc(o.level||"Objective")}</span>${o.team?`<span>${esc(o.team)}</span>`:""}${o.sample?`<span class="tag sample">Sample</span>`:""}${krs.length?`<span>${krs.length} KR</span>`:""}${inits.length?`<span>· ${inits.filter(i=>i.status==="done").length}/${inits.length} initiatives done</span>`:""}</div></div>
         </div>
         <div class="owner c-owner" title="${esc(o.owner)}">${esc(o.owner||"–")}</div>
         <div class="dates c-dates">${fmtDate(o.start)} – ${fmtDate(o.end)}</div>
         <div class="prog"><span class="p num">${fmtPct(p)}</span><span class="bar"><i style="width:${Math.min(1,p)*100}%;background:${STATUS[st].color}"></i></span></div>
         <div class="c-status"><span class="pill st-${st}">${STATUS[st].label}</span></div>
-        <div class="acts">${state.canWrite?`<button class="icon-btn" data-edit="${o.id}" title="Sửa objective" aria-label="Sửa objective">${icoEdit}</button>`:""}</div>
+        <div class="acts">${state.canWrite?`<button class="icon-btn" data-edit="${o.id}" title="Edit objective" aria-label="Edit objective">${icoEdit}</button>`:""}</div>
       </div>`);
       if (!open) return;
       krs.forEach(k => {
@@ -589,7 +589,7 @@ import { createStore, PermissionError } from "./js/store.js";
           <div class="title-cell" style="padding-left:${depth*22+28}px">
             <span class="kr-mark"><i></i></span>
             <div class="t-main"><div class="t-name">${esc(k.title)}</div>
-              <div class="t-sub">${wtTag(shareOf(o, k.id))}${isPh(k)?`<span class="tag ph">Chờ chốt số</span>`:""}<span><span class="conf-dot" style="background:${CONF[conf].color}"></span> Confidence ${CONF[conf].label}</span>${k.updatedAt?`<span>· ${esc(timeAgo(k.updatedAt))}</span>`:""}</div></div>
+              <div class="t-sub">${wtTag(shareOf(o, k.id))}${isPh(k)?`<span class="tag ph">Target TBC</span>`:""}<span><span class="conf-dot" style="background:${CONF[conf].color}"></span> Confidence ${CONF[conf].label}</span>${k.updatedAt?`<span>· ${esc(timeAgo(k.updatedAt))}</span>`:""}</div></div>
           </div>
           <div class="owner c-owner" title="${esc(k.owner||o.owner)}">${esc(k.owner||o.owner||"–")}</div>
           <div class="dates c-dates">${fmtDate(o.start)} – ${fmtDate(o.end)}</div>
@@ -608,12 +608,12 @@ import { createStore, PermissionError } from "./js/store.js";
           <div class="title-cell" style="padding-left:${depth*22+28}px">
             <span class="init-mark"><svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="1.5" y="1.5" width="9" height="9" rx="2"/>${st==="done"?'<path d="M3.8 6.2 5.3 7.7 8.3 4.5" stroke-linecap="round" stroke-linejoin="round"/>':""}</svg></span>
             <div class="t-main"><div class="t-name">${esc(i.title)}</div>
-              <div class="t-sub"><span class="tag">Initiative</span>${kr?`<span>→ ${esc(kr.title.length>48?kr.title.slice(0,48)+"…":kr.title)}</span>`:`<span>→ Objective chung</span>`}</div></div>
+              <div class="t-sub"><span class="tag">Initiative</span>${kr?`<span>→ ${esc(kr.title.length>48?kr.title.slice(0,48)+"…":kr.title)}</span>`:`<span>→ Objective as a whole</span>`}</div></div>
           </div>
           <div class="owner c-owner" title="${esc(i.owner)}">${esc(i.owner||"–")}</div>
-          <div class="dates c-dates" style="${overdue?"color:var(--bad)":""}">${i.due?"Hạn "+fmtDate(i.due):"–"}</div>
-          <div class="hint" style="font-size:11px">Không tính %</div>
-          <div class="c-status">${state.canWrite?`<button class="istat ${st}" data-init="${o.id}|${esc(i.id)}" title="Bấm để đổi trạng thái">${ISTAT[st]}</button>`:`<span class="istat ${st}">${ISTAT[st]}</span>`}</div>
+          <div class="dates c-dates" style="${overdue?"color:var(--bad)":""}">${i.due?"Due "+fmtDate(i.due):"–"}</div>
+          <div class="hint" style="font-size:11px">Not counted in %</div>
+          <div class="c-status">${state.canWrite?`<button class="istat ${st}" data-init="${o.id}|${esc(i.id)}" title="Click to change status">${ISTAT[st]}</button>`:`<span class="istat ${st}">${ISTAT[st]}</span>`}</div>
           <div class="acts"></div>
         </div>`);
       });
@@ -623,7 +623,7 @@ import { createStore, PermissionError } from "./js/store.js";
     childrenOf("").forEach(o => walk(o, 0, seen));
     // orphans (parent deleted)
     state.objectives.filter(o => o.parentId && !state.objectives.some(p=>p.id===o.parentId)).forEach(o=>walk(o,0,seen));
-    el.innerHTML = rows.length ? rows.join("") : `<div class="empty">Không có objective nào khớp bộ lọc.</div>`;
+    el.innerHTML = rows.length ? rows.join("") : `<div class="empty">No objectives match the filters.</div>`;
   }
 
   function renderView(){
@@ -647,10 +647,10 @@ import { createStore, PermissionError } from "./js/store.js";
   }
   function kpiHealth(k){ const vs = kpiVals(k); return vs.length ? kpiHealthOf(k, +vs[vs.length-1].value) : "none"; }
   const HCOLOR = { ok:"var(--ok)", warn:"var(--warn)", bad:"var(--bad)", none:"var(--idle)" };
-  const fmtPeriod = p => { if (!p) return "–"; const [y,m] = String(p).split("-"); return `T${+m}/${y}`; };
+  const fmtPeriod = p => { if (!p) return "–"; const [y,m] = String(p).split("-"); return new Date(+y, +m-1, 1).toLocaleDateString("en-GB",{month:"short",year:"numeric"}); };
 
   function spark(k){
-    const vs = kpiVals(k).slice(-6); if (!vs.length) return `<span class="hint" style="font-size:11px">Chưa có số</span>`;
+    const vs = kpiVals(k).slice(-6); if (!vs.length) return `<span class="hint" style="font-size:11px">No data</span>`;
     const nums = vs.map(v=>+v.value), t = +k.target;
     const lo = Math.min(...nums, isFinite(t)?t:Infinity), hi = Math.max(...nums, isFinite(t)?t:-Infinity);
     const W = 140, H = 28, pad = 4, span = hi-lo || 1;
@@ -658,7 +658,7 @@ import { createStore, PermissionError } from "./js/store.js";
     const y = v => H-pad - (v-lo)/span*(H-2*pad);
     const pts = nums.map((v,i)=>`${x(i).toFixed(1)},${y(v).toFixed(1)}`).join(" ");
     const last = nums.length-1, hc = HCOLOR[kpiHealthOf(k, nums[last])];
-    return `<svg class="spark" viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" aria-label="Xu hướng">
+    return `<svg class="spark" viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" aria-label="Trend">
       ${isFinite(t)?`<line x1="0" x2="${W}" y1="${y(t).toFixed(1)}" y2="${y(t).toFixed(1)}" stroke="var(--faint)" stroke-dasharray="3 3" stroke-width="1" vector-effect="non-scaling-stroke"/>`:""}
       <polyline points="${pts}" fill="none" stroke="var(--blue)" stroke-width="1.6" vector-effect="non-scaling-stroke" stroke-linejoin="round"/>
       <circle cx="${x(last).toFixed(1)}" cy="${y(nums[last]).toFixed(1)}" r="2.6" fill="${hc}"/></svg>`;
@@ -666,23 +666,23 @@ import { createStore, PermissionError } from "./js/store.js";
 
   function renderKpis(){
     const el = $("#kpis");
-    if (!state.loaded){ el.innerHTML = `<div class="empty">Đang tải KPI…</div>`; return; }
+    if (!state.loaded){ el.innerHTML = `<div class="empty">Loading KPIs…</div>`; return; }
     const q = state.q.toLowerCase();
     const list = state.kpis.filter(k => (!state.team || k.team===state.team) && (!q || [k.title,k.owner,k.team].some(s=>String(s||"").toLowerCase().includes(q))))
       .sort((a,b)=>String(a.team||"").localeCompare(String(b.team||""))||String(a.title).localeCompare(String(b.title)));
-    if (!state.kpis.length){ el.innerHTML = `<div class="empty"><h3>Chưa có KPI nào</h3>${state.canWrite?`Bấm <b>＋ KPI</b> để thêm chỉ số vận hành cần theo dõi hằng tháng.`:`Khi admin thêm KPI, chúng sẽ hiện ở đây.`}</div>`; return; }
-    if (!list.length){ el.innerHTML = `<div class="empty">Không có KPI nào khớp bộ lọc.</div>`; return; }
+    if (!state.kpis.length){ el.innerHTML = `<div class="empty"><h3>No KPIs yet</h3>${state.canWrite?`Click <b>＋ KPI</b> to add an operating metric to track monthly.`:`When an admin adds KPIs, they will appear here.`}</div>`; return; }
+    if (!list.length){ el.innerHTML = `<div class="empty">No KPIs match the filters.</div>`; return; }
     el.innerHTML = list.map(k => {
       const vs = kpiVals(k), last = vs[vs.length-1], h = kpiHealth(k);
       const linked = k.objectiveId ? state.all.find(o=>o.id===k.objectiveId) : null;
       return `<div class="row kcols">
         <div class="t-main"><div class="t-name">${esc(k.title)}</div>
-          <div class="t-sub"><span class="tag">KPI</span>${k.team?`<span>${esc(k.team)}</span>`:""}${k.sample?`<span class="tag sample">Mẫu</span>`:""}<span>Target ${k.direction==="lower"?"≤":"≥"} ${fmtNum(k.target)} ${esc(k.unit||"")}</span>${linked?`<span>· OKR cải thiện: ${esc(linked.title.length>40?linked.title.slice(0,40)+"…":linked.title)}</span>`:""}</div></div>
+          <div class="t-sub"><span class="tag">KPI</span>${k.team?`<span>${esc(k.team)}</span>`:""}${k.sample?`<span class="tag sample">Sample</span>`:""}<span>Target ${k.direction==="lower"?"≤":"≥"} ${fmtNum(k.target)} ${esc(k.unit||"")}</span>${linked?`<span>· Improved by OKR: ${esc(linked.title.length>40?linked.title.slice(0,40)+"…":linked.title)}</span>`:""}</div></div>
         <div class="owner c-owner" title="${esc(k.owner)}">${esc(k.owner||"–")}</div>
         <div class="c-spark">${spark(k)}</div>
         <div class="kpi-val num">${last?`${fmtNum(last.value)} <small>${esc(k.unit||"")} · ${fmtPeriod(last.period)}</small>`:`<small>–</small>`}</div>
         <div class="c-health"><span class="pill h-${h}">${HEALTH[h]}</span></div>
-        <div class="acts">${state.canWrite?`<button class="icon-btn" data-kpi-val="${esc(k.id)}" title="Nhập số kỳ mới" aria-label="Nhập số KPI">${icoCheck}</button><button class="icon-btn edit-only" data-kpi-edit="${esc(k.id)}" title="Sửa KPI" aria-label="Sửa KPI">${icoEdit}</button>`:""}</div>
+        <div class="acts">${state.canWrite?`<button class="icon-btn" data-kpi-val="${esc(k.id)}" title="Enter a new period value" aria-label="Enter KPI value">${icoCheck}</button><button class="icon-btn edit-only" data-kpi-edit="${esc(k.id)}" title="Edit KPI" aria-label="Edit KPI">${icoEdit}</button>`:""}</div>
       </div>`;
     }).join("");
   }
@@ -697,14 +697,14 @@ import { createStore, PermissionError } from "./js/store.js";
       const ks = state.kpis.filter(k=>k.team===t), kb = ks.filter(k=>kpiHealth(k)==="bad").length;
       return `<button class="team" data-team="${esc(t)}"><div class="tl">${esc(t)}<span class="num">${os.length?fmtPct(p):"–"}</span></div>
         <div class="bar"><i style="width:${p*100}%;background:var(--blue)"></i></div>
-        <small>${os.length} objectives · ${krN} KR${ks.length?` · ${ks.length} KPI`:""}${at?` · <span style="color:var(--warn)">${at} OKR cần chú ý</span>`:""}${kb?` · <span style="color:var(--bad)">${kb} KPI ngoài ngưỡng</span>`:""}</small></button>`;
-    }).join("") : `<div class="empty" style="padding:20px">Chưa có team.</div>`;
+        <small>${os.length} objectives · ${krN} KR${ks.length?` · ${ks.length} KPI`:""}${at?` · <span style="color:var(--warn)">${at} OKRs need attention</span>`:""}${kb?` · <span style="color:var(--bad)">${kb} KPIs off target</span>`:""}</small></button>`;
+    }).join("") : `<div class="empty" style="padding:20px">No teams yet.</div>`;
   }
 
   function timeAgo(iso){
     const d = (Date.now()-new Date(iso).getTime())/1000;
-    if (d < 60) return "vừa xong"; if (d < 3600) return Math.floor(d/60)+" phút trước";
-    if (d < 86400) return Math.floor(d/3600)+" giờ trước"; if (d < 86400*30) return Math.floor(d/86400)+" ngày trước";
+    if (d < 60) return "just now"; if (d < 3600) return Math.floor(d/60)+" min ago";
+    if (d < 86400) return Math.floor(d/3600)+" h ago"; if (d < 86400*30) return Math.floor(d/86400)+" d ago";
     return new Date(iso).toLocaleDateString("en-GB");
   }
 
@@ -716,7 +716,7 @@ import { createStore, PermissionError } from "./js/store.js";
         <span class="delta num">${fmtNum(c.prev)} → ${fmtNum(c.value)} ${esc(c.unit||"")} <b class="${diff<0?"neg":""}">${diff>=0?"+":""}${fmtNum(diff)}</b>${c.confidence&&CONF[c.confidence]?` · <span class="conf-dot" style="background:${CONF[c.confidence].color}"></span> ${CONF[c.confidence].label}`:""}</span>
         ${c.note?`<span class="note">${esc(c.note)}</span>`:""}
         <span class="when">${esc(c.by?c.by+" · ":"")}${esc(timeAgo(c.at))}</span></li>`;
-    }).join("") : `<li><span class="note">Chưa có check-in. Bấm biểu tượng check-in cạnh một key result để cập nhật số liệu.</span></li>`;
+    }).join("") : `<li><span class="note">No check-ins yet. Click the check-in icon next to a key result to update its numbers.</span></li>`;
   }
 
   // ---------- modals ----------
@@ -738,28 +738,28 @@ import { createStore, PermissionError } from "./js/store.js";
     const k = (o.krs||[]).find(x=>x.id===krId); if (!k) return;
     let conf = k.confidence || "high";
     openModal(`
-      <div class="m-head"><h3>Check-in key result</h3><button class="icon-btn" data-close aria-label="Đóng">✕</button></div>
+      <div class="m-head"><h3>Check-in key result</h3><button class="icon-btn" data-close aria-label="Close">✕</button></div>
       <form class="m-body" id="ci-form">
         <div><div class="eyebrow">${esc(o.title)}</div><div style="font-weight:600;margin-top:4px">${esc(k.title)}</div>
-          <div class="hint num" style="margin-top:4px">Bắt đầu ${fmtNum(k.start||0)} · Mục tiêu ${fmtNum(k.target)} ${esc(k.unit||"")} · Hiện tại ${fmtNum(k.current)}</div></div>
+          <div class="hint num" style="margin-top:4px">Start ${fmtNum(k.start||0)} · Target ${fmtNum(k.target)} ${esc(k.unit||"")} · Current ${fmtNum(k.current)}</div></div>
         <div class="grid2">
-          <div class="field"><label for="ci-val">Giá trị mới</label><input id="ci-val" type="number" step="any" required value="${esc(k.current)}"></div>
-          <div class="field"><label>Tiến độ</label><div id="ci-prev" class="num" style="padding:8px 0;font-family:var(--mono)"></div></div>
+          <div class="field"><label for="ci-val">New value</label><input id="ci-val" type="number" step="any" required value="${esc(k.current)}"></div>
+          <div class="field"><label>Progress</label><div id="ci-prev" class="num" style="padding:8px 0;font-family:var(--mono)"></div></div>
         </div>
-        <div class="field"><label>Mức tự tin đạt mục tiêu</label>
+        <div class="field"><label>Confidence of hitting the target</label>
           <div class="seg" id="ci-conf">${["high","medium","low"].map(c=>`<button type="button" data-c="${c}" aria-pressed="${conf===c}"><span class="conf-dot" style="background:${CONF[c].color}"></span>${CONF[c].label}</button>`).join("")}</div></div>
-        <div class="field"><label for="ci-note">Ghi chú (tùy chọn)</label><textarea id="ci-note" placeholder="Đã làm được gì, vướng ở đâu…"></textarea></div>
-        <div class="field"><label for="ci-by">Người check-in</label><input id="ci-by" type="text" value="${esc(lastBy())}" placeholder="Tên bạn"></div>
+        <div class="field"><label for="ci-note">Note (optional)</label><textarea id="ci-note" placeholder="What got done, what is blocked…"></textarea></div>
+        <div class="field"><label for="ci-by">Checked in by</label><input id="ci-by" type="text" value="${esc(lastBy())}" placeholder="Your name"></div>
         <div class="err" id="ci-err"></div>
       </form>
-      <div class="m-foot"><button class="btn" data-close>Huỷ</button><button class="btn primary" id="ci-save">Lưu check-in</button></div>`, true);
+      <div class="m-foot"><button class="btn" data-close>Cancel</button><button class="btn primary" id="ci-save">Save check-in</button></div>`, true);
     const upd = () => { const v = +$("#ci-val").value; const p = krPct({...k, current:v}); $("#ci-prev").textContent = `${fmtPct(krPct(k))} → ${isFinite(v)?fmtPct(p):"–"}`; };
     $("#ci-val").addEventListener("input", upd); upd();
     $("#ci-conf").addEventListener("click", e => { const b = e.target.closest("[data-c]"); if (!b) return; conf = b.dataset.c;
       $("#ci-conf").querySelectorAll("button").forEach(x=>x.setAttribute("aria-pressed", x.dataset.c===conf)); });
     const save = async () => {
       const v = $("#ci-val").value;
-      if (v === "" || !isFinite(+v)) { $("#ci-err").textContent = "Nhập giá trị là một con số."; return; }
+      if (v === "" || !isFinite(+v)) { $("#ci-err").textContent = "Enter a numeric value."; return; }
       const by = $("#ci-by").value.trim(); rememberBy(by);
       const now = new Date().toISOString();
       const krs = (o.krs||[]).map(x => x.id===krId ? {...x, current:+v, confidence:conf, updatedAt:now} : {...x});
@@ -767,7 +767,7 @@ import { createStore, PermissionError } from "./js/store.js";
       try {
         await state.db.doc("objectives/"+o.id).update({krs, updatedAt:now});
         await state.db.collection("checkins").add({objectiveId:o.id, krId, krTitle:k.title, unit:k.unit||"", prev:+k.current, value:+v, confidence:conf, note:$("#ci-note").value.trim(), by, at:now});
-        closeModal(); toast("Đã lưu check-in");
+        closeModal(); toast("Check-in saved");
       } catch(e){ $("#ci-save").disabled=false; $("#ci-err").textContent = writeErr(e); }
     };
     $("#ci-save").onclick = save;
@@ -777,34 +777,34 @@ import { createStore, PermissionError } from "./js/store.js";
   function lastBy(){ let v=""; try { v = localStorage.getItem("okr.by")||""; } catch {} return v || state.me || ""; }
   function rememberBy(v){ try { localStorage.setItem("okr.by", v); } catch {} }
   function writeErr(e){
-    if (e instanceof PermissionError) return "Tài khoản của bạn chỉ có quyền xem list OKR trên SharePoint. Nhờ HR cấp quyền Edit để cập nhật.";
-    return "Không lưu được (" + (e?.message||"lỗi") + "). Thử lại sau giây lát.";
+    if (e instanceof PermissionError) return "Your account has read-only access to the OKR lists on SharePoint. Ask HR for Edit access to make updates.";
+    return "Could not save (" + (e?.message||"error") + "). Please try again shortly.";
   }
 
 
   function krRow(k){
     return `<div class="kr-edit" data-kr="${esc(k.id)}">
-      <div class="hd"><span class="eyebrow">Key result</span><button type="button" class="btn ghost danger" data-rm-kr style="padding:2px 6px;font-size:12px">Xoá KR</button></div>
-      <div class="field"><input data-f="title" type="text" placeholder="VD: Đạt 4 MQL/tháng" value="${esc(k.title)}" aria-label="Tên key result"></div>
+      <div class="hd"><span class="eyebrow">Key result</span><button type="button" class="btn ghost danger" data-rm-kr style="padding:2px 6px;font-size:12px">Remove KR</button></div>
+      <div class="field"><input data-f="title" type="text" placeholder="e.g. Reach 4 MQLs/month" value="${esc(k.title)}" aria-label="Key result title"></div>
       <div class="grid5">
         <div class="field"><label>Owner</label><input data-f="owner" type="text" value="${esc(k.owner)}"></div>
-        <div class="field"><label>Bắt đầu</label><input data-f="start" type="number" step="any" value="${esc(k.start ?? 0)}"></div>
-        <div class="field"><label>Mục tiêu</label><input data-f="target" type="number" step="any" value="${esc(k.target ?? 100)}"></div>
-        <div class="field"><label>Đơn vị</label><input data-f="unit" type="text" placeholder="%" value="${esc(k.unit)}"></div>
-        <div class="field"><label>Tỉ trọng %</label><input data-f="weight" type="number" step="any" min="0" placeholder="Chia đều" value="${hasW(k.weight)?esc(k.weight):""}"></div>
+        <div class="field"><label>Start</label><input data-f="start" type="number" step="any" value="${esc(k.start ?? 0)}"></div>
+        <div class="field"><label>Target</label><input data-f="target" type="number" step="any" value="${esc(k.target ?? 100)}"></div>
+        <div class="field"><label>Unit</label><input data-f="unit" type="text" placeholder="%" value="${esc(k.unit)}"></div>
+        <div class="field"><label>Weight %</label><input data-f="weight" type="number" step="any" min="0" placeholder="Split evenly" value="${hasW(k.weight)?esc(k.weight):""}"></div>
       </div></div>`;
   }
 
   function initRow(i, krOpts){
     const st = ISTAT[i.status] ? i.status : "todo";
     return `<div class="kr-edit" data-init-row="${esc(i.id)}">
-      <div class="hd"><span class="eyebrow">Initiative</span><button type="button" class="btn ghost danger" data-rm-init style="padding:2px 6px;font-size:12px">Xoá</button></div>
-      <div class="field"><input data-f="title" type="text" placeholder="VD: Launch webinar series Q4" value="${esc(i.title)}" aria-label="Tên initiative"></div>
+      <div class="hd"><span class="eyebrow">Initiative</span><button type="button" class="btn ghost danger" data-rm-init style="padding:2px 6px;font-size:12px">Remove</button></div>
+      <div class="field"><input data-f="title" type="text" placeholder="e.g. Launch webinar series Q4" value="${esc(i.title)}" aria-label="Initiative title"></div>
       <div class="grid4">
-        <div class="field"><label>Đẩy KR nào</label><select data-f="krId" data-kr-select>${krOpts(i.krId)}</select></div>
+        <div class="field"><label>Drives which KR</label><select data-f="krId" data-kr-select>${krOpts(i.krId)}</select></div>
         <div class="field"><label>Owner</label><input data-f="owner" type="text" value="${esc(i.owner)}"></div>
-        <div class="field"><label>Hạn</label><input data-f="due" type="date" value="${esc(i.due)}"></div>
-        <div class="field"><label>Trạng thái</label><select data-f="status">${Object.keys(ISTAT).map(k=>`<option value="${k}" ${k===st?"selected":""}>${ISTAT[k]}</option>`).join("")}</select></div>
+        <div class="field"><label>Due</label><input data-f="due" type="date" value="${esc(i.due)}"></div>
+        <div class="field"><label>Status</label><select data-f="status">${Object.keys(ISTAT).map(k=>`<option value="${k}" ${k===st?"selected":""}>${ISTAT[k]}</option>`).join("")}</select></div>
       </div></div>`;
   }
 
@@ -816,55 +816,55 @@ import { createStore, PermissionError } from "./js/store.js";
     const parents = state.objectives.filter(x => !o || (x.id!==o.id && !descendants.has(x.id)));
     let armed = false;
     openModal(`
-      <div class="m-head"><h3>${o?"Sửa objective":"Objective mới"}</h3><button class="icon-btn" data-close aria-label="Đóng">✕</button></div>
+      <div class="m-head"><h3>${o?"Edit objective":"New objective"}</h3><button class="icon-btn" data-close aria-label="Close">✕</button></div>
       <form class="m-body" id="ob-form">
-        <div class="field"><label for="ob-title">Objective</label><input id="ob-title" type="text" required placeholder="VD: Achieve x1.3 Revenue Growth" value="${esc(d.title)}"></div>
+        <div class="field"><label for="ob-title">Objective</label><input id="ob-title" type="text" required placeholder="e.g. Achieve x1.3 Revenue Growth" value="${esc(d.title)}"></div>
         <div class="grid3">
-          <div class="field"><label for="ob-level">Cấp</label><select id="ob-level">${LEVELS.map(l=>`<option ${l===d.level?"selected":""}>${l}</option>`).join("")}</select></div>
-          <div class="field"><label for="ob-team">Team / Phòng ban</label><input id="ob-team" type="text" list="team-list" value="${esc(d.team)}" placeholder="VD: Marketing"><datalist id="team-list">${teamsList().map(t=>`<option value="${esc(t)}">`).join("")}</datalist></div>
+          <div class="field"><label for="ob-level">Level</label><select id="ob-level">${LEVELS.map(l=>`<option ${l===d.level?"selected":""}>${l}</option>`).join("")}</select></div>
+          <div class="field"><label for="ob-team">Team / Department</label><input id="ob-team" type="text" list="team-list" value="${esc(d.team)}" placeholder="e.g. Marketing"><datalist id="team-list">${teamsList().map(t=>`<option value="${esc(t)}">`).join("")}</datalist></div>
           <div class="field"><label for="ob-owner">Owner</label><input id="ob-owner" type="text" value="${esc(d.owner)}"></div>
         </div>
         <div class="grid3">
-          <div class="field"><label for="ob-parent">Thuộc objective</label><select id="ob-parent"><option value="">— Không (cấp cao nhất)</option>${parents.map(p=>`<option value="${esc(p.id)}" ${p.id===(d.parentId||"")?"selected":""}>${esc(p.title.slice(0,60))}</option>`).join("")}</select></div>
-          <div class="field"><label for="ob-start">Bắt đầu</label><input id="ob-start" type="date" value="${esc(d.start)}"></div>
-          <div class="field"><label for="ob-end">Kết thúc</label><input id="ob-end" type="date" value="${esc(d.end)}"></div>
+          <div class="field"><label for="ob-parent">Parent objective</label><select id="ob-parent"><option value="">— None (top level)</option>${parents.map(p=>`<option value="${esc(p.id)}" ${p.id===(d.parentId||"")?"selected":""}>${esc(p.title.slice(0,60))}</option>`).join("")}</select></div>
+          <div class="field"><label for="ob-start">Start</label><input id="ob-start" type="date" value="${esc(d.start)}"></div>
+          <div class="field"><label for="ob-end">End</label><input id="ob-end" type="date" value="${esc(d.end)}"></div>
         </div>
         <div class="grid3" id="ob-wrow">
-          <div class="field"><label for="ob-weight" id="ob-wlabel">Tỉ trọng (%)</label><input id="ob-weight" type="number" step="any" min="0" placeholder="Chia đều" value="${hasW(d.weight)?esc(d.weight):""}"></div>
+          <div class="field"><label for="ob-weight" id="ob-wlabel">Weight (%)</label><input id="ob-weight" type="number" step="any" min="0" placeholder="Split evenly" value="${hasW(d.weight)?esc(d.weight):""}"></div>
           <div class="hint" id="ob-whint" style="grid-column:span 2;align-self:end;padding-bottom:8px"></div>
         </div>
-        <div style="display:flex;justify-content:space-between;align-items:center"><span class="eyebrow">Key results</span><button type="button" class="btn" id="ob-add-kr">＋ Thêm KR</button></div>
+        <div style="display:flex;justify-content:space-between;align-items:center"><span class="eyebrow">Key results</span><button type="button" class="btn" id="ob-add-kr">＋ Add KR</button></div>
         <div id="ob-krs" style="display:flex;flex-direction:column;gap:10px">${(d.krs||[]).map(krRow).join("")}</div>
         <div class="wt-sum" id="ob-wsum"></div>
-        <div class="hint"><b>Tỉ trọng:</b> nhập % cho KR quan trọng, để trống các KR còn lại thì chúng tự chia đều phần còn lại. VD KR chính 90%, 2 KR phụ để trống → mỗi KR 5%. Nếu tổng khác 100%, hệ thống tự quy đổi theo tỉ lệ. Objective không có KR sẽ lấy tiến độ từ các objective con. KR phải là <b>kết quả đo được</b>; việc cần làm (launch, xây dựng, triển khai…) hãy đưa xuống Initiative.</div>
-        <div style="display:flex;justify-content:space-between;align-items:center"><span class="eyebrow">Initiatives · không tính vào %</span><button type="button" class="btn" id="ob-add-init">＋ Thêm initiative</button></div>
+        <div class="hint"><b>Weights:</b> enter a % for the key KRs and leave the rest blank to split the remainder evenly. E.g. main KR 90%, 2 minor KRs blank → 5% each. If the total is not 100%, it is rescaled proportionally. An objective with no KRs takes its progress from its child objectives. A KR must be a <b>measurable outcome</b>; tasks (launch, build, roll out…) belong under Initiatives.</div>
+        <div style="display:flex;justify-content:space-between;align-items:center"><span class="eyebrow">Initiatives · not counted in %</span><button type="button" class="btn" id="ob-add-init">＋ Add initiative</button></div>
         <div id="ob-inits" style="display:flex;flex-direction:column;gap:10px"></div>
         <div class="err" id="ob-err"></div>
       </form>
       <div class="m-foot">
-        ${o?`<button class="btn danger left" id="ob-del">Xoá objective</button>`:""}
-        ${o?`<button class="btn" id="ob-child">＋ Objective con</button>`:""}
-        <button class="btn" data-close>Huỷ</button><button class="btn primary" id="ob-save">${o?"Lưu":"Tạo objective"}</button></div>`);
+        ${o?`<button class="btn danger left" id="ob-del">Delete objective</button>`:""}
+        ${o?`<button class="btn" id="ob-child">＋ Child objective</button>`:""}
+        <button class="btn" data-close>Cancel</button><button class="btn primary" id="ob-save">${o?"Save":"Create objective"}</button></div>`);
     const krsBox = $("#ob-krs"), initsBox = $("#ob-inits");
     const kids = o ? childrenOf(o.id) : [];
     const updWeights = () => {
       const hasParent = !!$("#ob-parent").value;
-      $("#ob-wlabel").textContent = hasParent ? "Tỉ trọng trong objective cha (%)" : "Tỉ trọng trong tổng công ty (%)";
-      $("#ob-whint").textContent = hasParent ? "Objective con được chia tỉ trọng chung với các KR của objective cha." : "Dùng để tính % tiến độ chung của cả công ty ở thẻ Objectives.";
-      const rows = [...krsBox.querySelectorAll(".kr-edit")].map(r=>({name:r.querySelector('[data-f="title"]').value.trim()||"KR chưa đặt tên", w:r.querySelector('[data-f="weight"]').value}));
+      $("#ob-wlabel").textContent = hasParent ? "Weight within parent objective (%)" : "Weight in company total (%)";
+      $("#ob-whint").textContent = hasParent ? "Child objectives share weight with the parent objective's KRs." : "Used to calculate overall company progress on the Objectives card.";
+      const rows = [...krsBox.querySelectorAll(".kr-edit")].map(r=>({name:r.querySelector('[data-f="title"]').value.trim()||"Untitled KR", w:r.querySelector('[data-f="weight"]').value}));
       const items = [...rows, ...kids.map(c=>({name:"↳ "+c.title, w:c.weight}))];
       if (!items.length){ $("#ob-wsum").innerHTML = ""; return; }
       const ns = normWeights(items.map(i=>i.w));
       const setSum = items.filter(i=>hasW(i.w)).reduce((a,i)=>a+(+i.w),0);
       const over = setSum > 100 || (setSum < 100 && !items.some(i=>!hasW(i.w)) && setSum > 0);
       const el = $("#ob-wsum"); el.className = "wt-sum" + (setSum > 100 ? " over" : "");
-      el.innerHTML = `<span>Tỉ trọng thực tế:</span>` + items.map((i,n)=>`<span class="wt" title="${esc(i.name)}">${esc(i.name.length>22?i.name.slice(0,22)+"…":i.name)} · ${fmtPct(ns[n])}</span>`).join("") +
-        (over ? `<span>· Tổng đã nhập ${fmtNum(setSum)}%, hệ thống quy đổi theo tỉ lệ${setSum>100?" (các ô trống = 0%)":""}.</span>` : "");
+      el.innerHTML = `<span>Effective weights:</span>` + items.map((i,n)=>`<span class="wt" title="${esc(i.name)}">${esc(i.name.length>22?i.name.slice(0,22)+"…":i.name)} · ${fmtPct(ns[n])}</span>`).join("") +
+        (over ? `<span>· Entered total ${fmtNum(setSum)}%, rescaled proportionally${setSum>100?" (blank fields = 0%)":""}.</span>` : "");
     };
     krsBox.addEventListener("input", updWeights);
     $("#ob-parent").addEventListener("change", updWeights);
     const currentKrs = () => [...krsBox.querySelectorAll(".kr-edit")].map(r=>({id:r.dataset.kr, title:r.querySelector('[data-f="title"]').value.trim()})).filter(k=>k.title);
-    const krOpts = sel => `<option value="">— Objective chung</option>` + currentKrs().map(k=>`<option value="${esc(k.id)}" ${k.id===sel?"selected":""}>${esc(k.title.slice(0,50))}</option>`).join("");
+    const krOpts = sel => `<option value="">— Objective as a whole</option>` + currentKrs().map(k=>`<option value="${esc(k.id)}" ${k.id===sel?"selected":""}>${esc(k.title.slice(0,50))}</option>`).join("");
     initsBox.innerHTML = (d.initiatives||[]).map(i=>initRow(i, krOpts)).join("");
     initsBox.addEventListener("focusin", e => { const s = e.target.closest("[data-kr-select]"); if (s){ const v = s.value; s.innerHTML = krOpts(v); } });
     initsBox.addEventListener("click", e => { if (e.target.closest("[data-rm-init]")) e.target.closest(".kr-edit").remove(); });
@@ -875,15 +875,15 @@ import { createStore, PermissionError } from "./js/store.js";
     if (o){
       $("#ob-child").onclick = () => objectiveModal(null, o.id);
       $("#ob-del").onclick = async () => {
-        if (!armed){ armed = true; $("#ob-del").textContent = "Bấm lần nữa để xoá"; return; }
+        if (!armed){ armed = true; $("#ob-del").textContent = "Click again to delete"; return; }
         try { await state.db.doc("objectives/"+o.id).delete();
           for (const c of childrenOf(o.id)) await state.db.doc("objectives/"+c.id).update({parentId: o.parentId||""});
-          closeModal(); toast("Đã xoá objective"); } catch(e){ $("#ob-err").textContent = writeErr(e); }
+          closeModal(); toast("Objective deleted"); } catch(e){ $("#ob-err").textContent = writeErr(e); }
       };
     }
     const save = async () => {
       const title = $("#ob-title").value.trim();
-      if (!title){ $("#ob-err").textContent = "Objective cần có tên."; return; }
+      if (!title){ $("#ob-err").textContent = "Objective needs a title."; return; }
       const old = Object.fromEntries((o?.krs||[]).map(k=>[k.id,k]));
       const krs = [...krsBox.querySelectorAll(".kr-edit")].map(r => {
         const g = f => r.querySelector(`[data-f="${f}"]`).value;
@@ -898,7 +898,7 @@ import { createStore, PermissionError } from "./js/store.js";
         const krId = krs.some(k=>k.id===g("krId")) ? g("krId") : "";
         return { id:r.dataset.initRow, title:g("title").trim(), owner:g("owner").trim(), krId, due:g("due")||"", status:g("status") };
       }).filter(i=>i.title);
-      if (krs.some(k=>!isFinite(k.target))){ $("#ob-err").textContent = "Mỗi KR cần mục tiêu là một con số."; return; }
+      if (krs.some(k=>!isFinite(k.target))){ $("#ob-err").textContent = "Each KR needs a numeric target."; return; }
       const body = { title, level:$("#ob-level").value, team:$("#ob-team").value.trim(), owner:$("#ob-owner").value.trim(),
         parentId:$("#ob-parent").value, weight: hasW($("#ob-weight").value) ? +$("#ob-weight").value : null, start:$("#ob-start").value||cyStart(), end:$("#ob-end").value||cyEnd(), cycle: o ? cycleOf(o) : state.cycle,
         krs, initiatives, order: o?.order ?? Date.now(), sample: o?.sample || false, updatedAt:new Date().toISOString() };
@@ -907,7 +907,7 @@ import { createStore, PermissionError } from "./js/store.js";
         const ref = o ? state.db.doc("objectives/"+o.id) : state.db.collection("objectives").doc();
         await ref.set(body);
         if (body.parentId){ state.opened.add(body.parentId); state.collapsed.delete(body.parentId); }
-        closeModal(); toast(o?"Đã lưu objective":"Đã tạo objective");
+        closeModal(); toast(o?"Objective saved":"Objective created");
       } catch(e){ $("#ob-save").disabled=false; $("#ob-err").textContent = writeErr(e); }
     };
     $("#ob-save").onclick = save;
@@ -919,39 +919,39 @@ import { createStore, PermissionError } from "./js/store.js";
     const d = k || {title:"", team: state.team||"", owner:"", unit:"", target:"", direction:"higher", tolerance:10, objectiveId:"", values:[]};
     let armed = false;
     openModal(`
-      <div class="m-head"><h3>${k?"Sửa KPI":"KPI mới"}</h3><button class="icon-btn" data-close aria-label="Đóng">✕</button></div>
+      <div class="m-head"><h3>${k?"Edit KPI":"New KPI"}</h3><button class="icon-btn" data-close aria-label="Close">✕</button></div>
       <form class="m-body" id="kp-form">
-        <div class="field"><label for="kp-title">Tên KPI</label><input id="kp-title" type="text" required placeholder="VD: Tỷ lệ nghỉ việc tự nguyện (năm hoá)" value="${esc(d.title)}"></div>
+        <div class="field"><label for="kp-title">KPI name</label><input id="kp-title" type="text" required placeholder="e.g. Voluntary attrition rate (annualised)" value="${esc(d.title)}"></div>
         <div class="grid2">
-          <div class="field"><label for="kp-team">Team / Phòng ban</label><input id="kp-team" type="text" list="kp-team-list" value="${esc(d.team)}"><datalist id="kp-team-list">${teamsList().map(t=>`<option value="${esc(t)}">`).join("")}</datalist></div>
+          <div class="field"><label for="kp-team">Team / Department</label><input id="kp-team" type="text" list="kp-team-list" value="${esc(d.team)}"><datalist id="kp-team-list">${teamsList().map(t=>`<option value="${esc(t)}">`).join("")}</datalist></div>
           <div class="field"><label for="kp-owner">Owner</label><input id="kp-owner" type="text" value="${esc(d.owner)}"></div>
         </div>
         <div class="grid3">
-          <div class="field"><label for="kp-dir">Chiều tốt</label><select id="kp-dir"><option value="higher" ${d.direction!=="lower"?"selected":""}>Càng cao càng tốt (≥)</option><option value="lower" ${d.direction==="lower"?"selected":""}>Càng thấp càng tốt (≤)</option></select></div>
-          <div class="field"><label for="kp-target">Ngưỡng target</label><input id="kp-target" type="number" step="any" required value="${esc(d.target)}"></div>
-          <div class="field"><label for="kp-unit">Đơn vị</label><input id="kp-unit" type="text" placeholder="%, USD, người…" value="${esc(d.unit)}"></div>
+          <div class="field"><label for="kp-dir">Better direction</label><select id="kp-dir"><option value="higher" ${d.direction!=="lower"?"selected":""}>Higher is better (≥)</option><option value="lower" ${d.direction==="lower"?"selected":""}>Lower is better (≤)</option></select></div>
+          <div class="field"><label for="kp-target">Target threshold</label><input id="kp-target" type="number" step="any" required value="${esc(d.target)}"></div>
+          <div class="field"><label for="kp-unit">Unit</label><input id="kp-unit" type="text" placeholder="%, USD, people…" value="${esc(d.unit)}"></div>
         </div>
         <div class="grid2">
-          <div class="field"><label for="kp-tol">Biên "sát ngưỡng" (%)</label><input id="kp-tol" type="number" step="any" min="0" value="${esc(d.tolerance ?? 10)}"></div>
-          <div class="field"><label for="kp-obj">OKR đang cải thiện KPI này</label><select id="kp-obj"><option value="">— Không</option>${state.all.map(o=>`<option value="${esc(o.id)}" ${o.id===d.objectiveId?"selected":""}>[${cycleOf(o)}] ${esc(o.title.slice(0,56))}</option>`).join("")}</select></div>
+          <div class="field"><label for="kp-tol">"Near threshold" margin (%)</label><input id="kp-tol" type="number" step="any" min="0" value="${esc(d.tolerance ?? 10)}"></div>
+          <div class="field"><label for="kp-obj">OKR improving this KPI</label><select id="kp-obj"><option value="">— None</option>${state.all.map(o=>`<option value="${esc(o.id)}" ${o.id===d.objectiveId?"selected":""}>[${cycleOf(o)}] ${esc(o.title.slice(0,56))}</option>`).join("")}</select></div>
         </div>
-        <div class="hint">Health: Đạt khi đúng target · Sát ngưỡng khi lệch trong biên · Ngoài ngưỡng khi lệch quá biên.</div>
+        <div class="hint">Health: On target when meeting the target · Near threshold when off by less than the margin · Off target when beyond the margin.</div>
         <div class="err" id="kp-err"></div>
       </form>
-      <div class="m-foot">${k?`<button class="btn danger left" id="kp-del">Xoá KPI</button>`:""}<button class="btn" data-close>Huỷ</button><button class="btn primary" id="kp-save">${k?"Lưu":"Tạo KPI"}</button></div>`);
+      <div class="m-foot">${k?`<button class="btn danger left" id="kp-del">Delete KPI</button>`:""}<button class="btn" data-close>Cancel</button><button class="btn primary" id="kp-save">${k?"Save":"Create KPI"}</button></div>`);
     if (k) $("#kp-del").onclick = async () => {
-      if (!armed){ armed = true; $("#kp-del").textContent = "Bấm lần nữa để xoá"; return; }
-      try { await state.db.doc("kpis/"+k.id).delete(); closeModal(); toast("Đã xoá KPI"); } catch(e){ $("#kp-err").textContent = writeErr(e); }
+      if (!armed){ armed = true; $("#kp-del").textContent = "Click again to delete"; return; }
+      try { await state.db.doc("kpis/"+k.id).delete(); closeModal(); toast("KPI deleted"); } catch(e){ $("#kp-err").textContent = writeErr(e); }
     };
     const save = async () => {
       const title = $("#kp-title").value.trim(), target = $("#kp-target").value;
-      if (!title){ $("#kp-err").textContent = "KPI cần có tên."; return; }
-      if (target === "" || !isFinite(+target)){ $("#kp-err").textContent = "Ngưỡng target phải là một con số."; return; }
+      if (!title){ $("#kp-err").textContent = "KPI needs a name."; return; }
+      if (target === "" || !isFinite(+target)){ $("#kp-err").textContent = "Target threshold must be a number."; return; }
       const body = { title, team:$("#kp-team").value.trim(), owner:$("#kp-owner").value.trim(), direction:$("#kp-dir").value,
         target:+target, unit:$("#kp-unit").value.trim(), tolerance: isFinite(+$("#kp-tol").value) ? +$("#kp-tol").value : 10,
         objectiveId:$("#kp-obj").value, values: k?.values || [], sample: k?.sample || false, updatedAt:new Date().toISOString() };
       $("#kp-save").disabled = true;
-      try { const ref = k ? state.db.doc("kpis/"+k.id) : state.db.collection("kpis").doc(); await ref.set(body); closeModal(); toast(k?"Đã lưu KPI":"Đã tạo KPI"); }
+      try { const ref = k ? state.db.doc("kpis/"+k.id) : state.db.collection("kpis").doc(); await ref.set(body); closeModal(); toast(k?"KPI saved":"KPI created"); }
       catch(e){ $("#kp-save").disabled = false; $("#kp-err").textContent = writeErr(e); }
     };
     $("#kp-save").onclick = save;
@@ -963,32 +963,32 @@ import { createStore, PermissionError } from "./js/store.js";
     const vs = kpiVals(k);
     const now = new Date(); const defPeriod = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,"0")}`;
     openModal(`
-      <div class="m-head"><h3>Nhập số KPI</h3><button class="icon-btn" data-close aria-label="Đóng">✕</button></div>
+      <div class="m-head"><h3>Enter KPI value</h3><button class="icon-btn" data-close aria-label="Close">✕</button></div>
       <form class="m-body" id="kv-form">
         <div><div class="eyebrow">${esc(k.team||"KPI")}</div><div style="font-weight:600;margin-top:4px">${esc(k.title)}</div>
           <div class="hint num" style="margin-top:4px">Target ${k.direction==="lower"?"≤":"≥"} ${fmtNum(k.target)} ${esc(k.unit||"")}</div></div>
         <div class="grid2">
-          <div class="field"><label for="kv-period">Kỳ (tháng)</label><input id="kv-period" type="month" value="${defPeriod}" required></div>
-          <div class="field"><label for="kv-val">Giá trị</label><input id="kv-val" type="number" step="any" required></div>
+          <div class="field"><label for="kv-period">Period (month)</label><input id="kv-period" type="month" value="${defPeriod}" required></div>
+          <div class="field"><label for="kv-val">Value</label><input id="kv-val" type="number" step="any" required></div>
         </div>
         <div class="hint" id="kv-health"></div>
-        ${vs.length?`<div class="field"><label>Lịch sử (nhập lại cùng kỳ sẽ ghi đè)</label><div class="hist">${[...vs].reverse().map(v=>`<div><span>${fmtPeriod(v.period)}</span><span style="color:${HCOLOR[kpiHealthOf(k,+v.value)]}">${fmtNum(v.value)} ${esc(k.unit||"")}</span></div>`).join("")}</div></div>`:""}
+        ${vs.length?`<div class="field"><label>History (re-entering the same period overwrites it)</label><div class="hist">${[...vs].reverse().map(v=>`<div><span>${fmtPeriod(v.period)}</span><span style="color:${HCOLOR[kpiHealthOf(k,+v.value)]}">${fmtNum(v.value)} ${esc(k.unit||"")}</span></div>`).join("")}</div></div>`:""}
         <div class="err" id="kv-err"></div>
       </form>
-      <div class="m-foot"><button class="btn" data-close>Huỷ</button><button class="btn primary" id="kv-save">Lưu số</button></div>`, true);
+      <div class="m-foot"><button class="btn" data-close>Cancel</button><button class="btn primary" id="kv-save">Save value</button></div>`, true);
     const prefill = () => { const v = vs.find(x=>x.period===$("#kv-period").value); if (v) $("#kv-val").value = v.value; };
-    const hint = () => { const v = $("#kv-val").value; const h = v===""?null:kpiHealthOf(k,+v); $("#kv-health").innerHTML = h ? `Health kỳ này: <span class="pill h-${h}">${HEALTH[h]}</span>` : ""; };
+    const hint = () => { const v = $("#kv-val").value; const h = v===""?null:kpiHealthOf(k,+v); $("#kv-health").innerHTML = h ? `Health this period: <span class="pill h-${h}">${HEALTH[h]}</span>` : ""; };
     $("#kv-period").addEventListener("change", () => { prefill(); hint(); });
     $("#kv-val").addEventListener("input", hint);
     prefill(); hint(); $("#kv-val").focus();
     const save = async () => {
       const period = $("#kv-period").value, v = $("#kv-val").value;
-      if (!/^\d{4}-\d{2}$/.test(period)){ $("#kv-err").textContent = "Chọn tháng của số liệu."; return; }
-      if (v === "" || !isFinite(+v)){ $("#kv-err").textContent = "Nhập giá trị là một con số."; return; }
+      if (!/^\d{4}-\d{2}$/.test(period)){ $("#kv-err").textContent = "Select the month for this value."; return; }
+      if (v === "" || !isFinite(+v)){ $("#kv-err").textContent = "Enter a numeric value."; return; }
       const values = (k.values||[]).filter(x=>x.period!==period).concat([{period, value:+v, at:new Date().toISOString()}])
         .sort((a,b)=>String(a.period).localeCompare(String(b.period))).slice(-36);
       $("#kv-save").disabled = true;
-      try { await state.db.doc("kpis/"+k.id).update({values, updatedAt:new Date().toISOString()}); closeModal(); toast("Đã lưu số KPI"); }
+      try { await state.db.doc("kpis/"+k.id).update({values, updatedAt:new Date().toISOString()}); closeModal(); toast("KPI value saved"); }
       catch(e){ $("#kv-save").disabled = false; $("#kv-err").textContent = writeErr(e); }
     };
     $("#kv-save").onclick = save;
@@ -1003,13 +1003,13 @@ import { createStore, PermissionError } from "./js/store.js";
 
   async function clearSamples(){
     const b = $("#btn-clear-sample");
-    if (!b.dataset.armed){ b.dataset.armed = "1"; b.textContent = "Bấm lần nữa để xoá toàn bộ dữ liệu mẫu"; return; }
+    if (!b.dataset.armed){ b.dataset.armed = "1"; b.textContent = "Click again to delete all sample data"; return; }
     try {
       const ids = new Set(state.all.filter(o=>o.sample).map(o=>o.id));
       for (const id of ids) await state.db.doc("objectives/"+id).delete();
       for (const c of state.checkins.filter(c=>c.sample || ids.has(c.objectiveId))) await state.db.doc("checkins/"+c.id).delete();
       for (const k of state.kpis.filter(k=>k.sample)) await state.db.doc("kpis/"+k.id).delete();
-      toast("Đã xoá dữ liệu mẫu");
+      toast("Sample data deleted");
     } catch(e){ toast(writeErr(e)); }
   }
 
@@ -1020,7 +1020,7 @@ import { createStore, PermissionError } from "./js/store.js";
     if (t.hasAttribute("data-close")) return closeModal();
     if (t.dataset.toggle){
       const id = t.dataset.toggle, isOpen = t.getAttribute("aria-expanded")==="true";
-      state.allOpen = false; $("#btn-expand").textContent = "Mở tất cả";
+      state.allOpen = false; $("#btn-expand").textContent = "Expand all";
       if (isOpen){ state.opened.delete(id); state.collapsed.add(id); } else { state.opened.add(id); state.collapsed.delete(id); }
       renderTree(); return;
     }
@@ -1038,7 +1038,7 @@ import { createStore, PermissionError } from "./js/store.js";
   $("#btn-new").onclick = () => objectiveModal(null);
   $("#btn-new-kpi").onclick = () => kpiModal(null);
   $("#cycle").addEventListener("change", e => { state.cycle = e.target.value; try { localStorage.setItem("okr.cycle", state.cycle); } catch {} applyCycle(); state.team = ""; render(); });
-  $("#btn-expand").onclick = () => { state.allOpen = !state.allOpen; if (!state.allOpen){ state.opened = new Set(); state.collapsed = new Set(); } $("#btn-expand").textContent = state.allOpen ? "Thu gọn" : "Mở tất cả"; renderTree(); };
+  $("#btn-expand").onclick = () => { state.allOpen = !state.allOpen; if (!state.allOpen){ state.opened = new Set(); state.collapsed = new Set(); } $("#btn-expand").textContent = state.allOpen ? "Collapse all" : "Expand all"; renderTree(); };
 
   // ---------- data ----------
   render();
@@ -1069,8 +1069,8 @@ import { createStore, PermissionError } from "./js/store.js";
     state.canWrite = true;
     const loadErr = (e) => {
       state.loaded = true;
-      if (e instanceof PermissionError) { state.db = null; showLanding("Tài khoản của bạn chưa có quyền truy cập dữ liệu OKR trên SharePoint (site ORG HR Admin). Liên hệ HR để được cấp quyền."); }
-      else toast("Lỗi tải dữ liệu: " + e.message);
+      if (e instanceof PermissionError) { state.db = null; showLanding("Your account does not have access to the OKR data on SharePoint (ORG HR Admin site). Contact HR to request access."); }
+      else toast("Failed to load data: " + e.message);
       render();
     };
     db.collection("objectives").onSnapshot(snap => {
