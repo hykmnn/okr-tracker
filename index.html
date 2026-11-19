@@ -1,0 +1,1092 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 57 35'><path d='M56.8154 0V35H29.4355V26.25H48.3164V7.9541H37.8486V13.125H43.4854V21.4775H29.4355V0H56.8154Z' fill='%234970AE'/><path d='M27.3799 0V21.4775H13.2871V13.125H18.9238V7.9541H8.45508V26.25H27.3799V35H0V0H27.3799Z' fill='%234970AE'/></svg>">
+<title>EGS OKR Tracker</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: topbar → summary strip (objectives / status ring / confidence / pace) → goal tree + side rail (check-ins, teams). Eastgate Design System tokens. */
+:root{
+  --bg:#F7F8FA; --surface:#FFFFFF; --sunk:#EEF1F6; --ink:#0E1726; --muted:#5B6577; --faint:#8A93A3; --line:#E3E7EE;
+  --blue:#4970AE; --blue-deep:#355492; --blue-soft:#C9D6E8; --blue-wash:#EDF2F9; --purple:#5D3CB0;
+  --ok:#1FA97D; --warn:#F2A93B; --bad:#E24B4B; --idle:#A7AFBD; --done:#5D3CB0;
+  --ok-wash:#E4F5EF; --warn-wash:#FDF2E1; --bad-wash:#FCE9E9; --idle-wash:#EEF0F3; --done-wash:#EEEAF8;
+  --scrim:rgba(14,23,38,.42);
+  --sans:"Montserrat",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+  --r1:4px; --r2:8px;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0B1220; --surface:#121B2C; --sunk:#0F1726; --ink:#E6EBF3; --muted:#9AA6BA; --faint:#6F7B90; --line:#223049;
+  --blue:#7694C2; --blue-deep:#A9BEDF; --blue-soft:#2A3B5C; --blue-wash:#16223A; --purple:#A08AE6;
+  --ok:#34C392; --warn:#F5B95A; --bad:#F06A6A; --idle:#5E6A80; --done:#A08AE6;
+  --ok-wash:#11302A; --warn-wash:#33281A; --bad-wash:#361C22; --idle-wash:#1B2436; --done-wash:#231D3B;
+  --scrim:rgba(0,0,0,.6); color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0B1220; --surface:#121B2C; --sunk:#0F1726; --ink:#E6EBF3; --muted:#9AA6BA; --faint:#6F7B90; --line:#223049;
+  --blue:#7694C2; --blue-deep:#A9BEDF; --blue-soft:#2A3B5C; --blue-wash:#16223A; --purple:#A08AE6;
+  --ok:#34C392; --warn:#F5B95A; --bad:#F06A6A; --idle:#5E6A80; --done:#A08AE6;
+  --ok-wash:#11302A; --warn-wash:#33281A; --bad-wash:#361C22; --idle-wash:#1B2436; --done-wash:#231D3B;
+  --scrim:rgba(0,0,0,.6); color-scheme:dark}
+
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:14px;line-height:1.45;padding:0 16px 48px}
+.wrap{max-width:1280px;margin:0 auto}
+button{font:inherit;color:inherit;cursor:pointer}
+:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
+.eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--faint)}
+.num{font-variant-numeric:tabular-nums}
+
+/* topbar */
+.top{display:flex;align-items:center;gap:16px;flex-wrap:wrap;padding-block:20px 16px}
+.brand{display:flex;align-items:center;gap:12px;min-width:0}
+.brand svg{flex:none}
+.brand h1{margin:0;font-size:22px;font-weight:700;letter-spacing:-.01em}
+.cycle-sel{font:inherit;font-weight:700;color:var(--blue-deep);background:transparent;border:1px solid transparent;border-radius:var(--r1);padding:0 2px;cursor:pointer}
+.cycle-sel:hover{border-color:var(--line)}
+.tag.ph{background:var(--warn-wash);color:var(--warn)}
+.brand .sub{font-family:var(--mono);font-size:11px;color:var(--muted);letter-spacing:.04em}
+.top .spacer{flex:1}
+.btn{border:1px solid var(--line);background:var(--surface);border-radius:var(--r2);padding:8px 14px;font-weight:600;font-size:13px;display:inline-flex;align-items:center;gap:6px}
+.btn:hover{border-color:var(--blue)}
+.btn.primary{background:var(--blue-deep);border-color:var(--blue-deep);color:#fff}
+:root[data-theme="dark"] .btn.primary{color:#0B1220}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .btn.primary{color:#0B1220}}
+.btn.primary:hover{filter:brightness(1.08)}
+.btn.ghost{border-color:transparent;background:transparent}
+.btn.danger{color:var(--bad)}
+.btn[disabled]{opacity:.5;cursor:not-allowed}
+
+.notice{display:flex;gap:10px;align-items:center;border:1px solid var(--line);background:var(--surface);border-radius:var(--r2);padding:10px 14px;margin-bottom:16px;color:var(--muted);font-size:13px}
+.notice .dot{width:8px;height:8px;border-radius:999px;background:var(--ok);flex:none}
+.notice.warn .dot{background:var(--warn)}
+
+/* summary strip */
+.summary{display:grid;grid-template-columns:1.25fr 1fr 1fr 1fr;border:1px solid var(--line);background:var(--surface);border-radius:var(--r2);margin-bottom:20px}
+.summary>section{padding:18px 20px;min-width:0;display:flex;flex-direction:column;gap:10px}
+.summary>section+section{border-left:1px solid var(--line)}
+.big{font-size:40px;font-weight:700;line-height:1;letter-spacing:-.02em}
+.meta-list{display:flex;flex-direction:column;gap:4px;color:var(--muted);font-size:12px}
+.overall{display:flex;align-items:baseline;justify-content:space-between;gap:12px}
+.overall .pct{font-family:var(--mono);font-size:15px;font-weight:500}
+.hero-bar{height:8px;border-radius:999px;background:var(--sunk);position:relative;overflow:hidden}
+.hero-bar i{position:absolute;inset:0 auto 0 0;border-radius:999px;background:linear-gradient(90deg,var(--blue),var(--purple))}
+.hero-bar b{position:absolute;top:-3px;bottom:-3px;width:2px;background:var(--ink);opacity:.55}
+.ring-row{display:flex;align-items:center;gap:16px}
+.legend{display:flex;flex-direction:column;gap:5px;font-size:12px;min-width:0}
+.legend span{display:flex;align-items:center;gap:8px;white-space:nowrap}
+.legend em{font-style:normal;width:9px;height:9px;border-radius:999px;flex:none}
+.legend strong{font-family:var(--mono);font-weight:500;min-width:22px;text-align:right}
+.conf-bar{display:flex;height:10px;border-radius:999px;overflow:hidden;background:var(--sunk)}
+.conf-bar i{display:block;height:100%}
+.pace{display:flex;flex-direction:column;gap:6px;font-size:12px;color:var(--muted)}
+.pace .row{display:flex;justify-content:space-between;gap:8px}
+.pace .row b{font-family:var(--mono);font-weight:500;color:var(--ink)}
+
+/* main layout */
+.main{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:20px;align-items:start}
+.panel{border:1px solid var(--line);background:var(--surface);border-radius:var(--r2);min-width:0}
+.panel-head{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:12px 16px;border-bottom:1px solid var(--line)}
+.panel-head h2{margin:0;font-size:15px;font-weight:700}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.chip{border:1px solid var(--line);background:transparent;border-radius:999px;padding:4px 10px;font-size:12px;font-weight:500;color:var(--muted)}
+.chip[aria-pressed="true"]{background:var(--blue-wash);border-color:var(--blue);color:var(--blue-deep)}
+.search{flex:1;min-width:160px;border:1px solid var(--line);background:var(--bg);border-radius:var(--r2);padding:7px 10px;font:inherit;font-size:13px;color:var(--ink)}
+.filters{display:flex;gap:8px;flex-wrap:wrap;align-items:center;padding:10px 16px;border-bottom:1px solid var(--line)}
+select.sel{border:1px solid var(--line);background:var(--bg);border-radius:var(--r2);padding:6px 8px;font:inherit;font-size:12px;color:var(--ink)}
+
+/* tree */
+.cols{display:grid;grid-template-columns:minmax(0,1fr) 130px 92px 150px 112px 64px;gap:12px;align-items:center}
+.tree-head{padding:8px 16px;border-bottom:1px solid var(--line)}
+.row{padding:9px 16px;border-bottom:1px solid var(--line)}
+.row:last-child{border-bottom:0}
+.row:hover{background:var(--bg)}
+.row.kr{background:transparent}
+.title-cell{display:flex;align-items:flex-start;gap:8px;min-width:0}
+.caret{width:20px;height:20px;border:0;background:transparent;border-radius:var(--r1);display:grid;place-items:center;flex:none;color:var(--faint);padding:0}
+.caret:hover{background:var(--sunk);color:var(--ink)}
+.caret svg{transition:transform .15s}
+.caret[aria-expanded="true"] svg{transform:rotate(90deg)}
+.caret.blank{visibility:hidden}
+.t-main{min-width:0}
+.t-name{font-weight:600;overflow-wrap:anywhere}
+.row.lvl-0 .t-name{font-size:15px;font-weight:700}
+.row.kr .t-name{font-weight:500}
+.t-sub{font-size:11px;color:var(--faint);display:flex;gap:6px;flex-wrap:wrap;margin-top:2px}
+.tag{font-family:var(--mono);font-size:10px;letter-spacing:.05em;text-transform:uppercase;padding:1px 6px;border-radius:var(--r1);background:var(--sunk);color:var(--muted)}
+.tag.sample{background:var(--warn-wash);color:var(--warn)}
+.kr-mark{flex:none;width:20px;height:20px;display:grid;place-items:center}
+.kr-mark i{width:7px;height:7px;border:1.5px solid var(--faint);transform:rotate(45deg)}
+.owner{font-size:12px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.dates{font-family:var(--mono);font-size:11px;color:var(--faint);white-space:nowrap}
+.prog{display:flex;align-items:center;gap:8px}
+.prog .p{font-family:var(--mono);font-size:12px;min-width:46px;text-align:right}
+.bar{flex:1;height:6px;border-radius:999px;background:var(--sunk);overflow:hidden}
+.bar i{display:block;height:100%;border-radius:999px}
+.kr-val{font-family:var(--mono);font-size:10px;color:var(--faint);text-align:right;margin-top:2px}
+.pill{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:600;padding:3px 8px;border-radius:999px;white-space:nowrap}
+.pill::before{content:"";width:6px;height:6px;border-radius:999px;background:currentColor}
+.st-done{background:var(--done-wash);color:var(--done)}
+.st-ontrack{background:var(--ok-wash);color:var(--ok)}
+.st-behind{background:var(--warn-wash);color:var(--warn)}
+.st-atrisk{background:var(--bad-wash);color:var(--bad)}
+.st-notstarted{background:var(--idle-wash);color:var(--muted)}
+.acts{display:flex;gap:2px;justify-content:flex-end}
+.icon-btn{width:28px;height:28px;border:1px solid transparent;background:transparent;border-radius:var(--r1);display:grid;place-items:center;color:var(--muted);padding:0}
+.icon-btn:hover{border-color:var(--line);color:var(--blue-deep);background:var(--surface)}
+.conf-dot{width:8px;height:8px;border-radius:999px;display:inline-block}
+.empty{padding:40px 24px;text-align:center;color:var(--muted)}
+.empty h3{margin:0 0 6px;color:var(--ink);font-size:16px}
+
+/* side rail */
+.rail{display:flex;flex-direction:column;gap:20px;min-width:0}
+.feed{list-style:none;margin:0;padding:0}
+.feed li{padding:10px 16px;border-bottom:1px solid var(--line);display:flex;flex-direction:column;gap:3px}
+.feed li:last-child{border-bottom:0}
+.feed .what{font-size:13px;font-weight:600;overflow-wrap:anywhere}
+.feed .delta{font-family:var(--mono);font-size:12px;color:var(--muted)}
+.feed .delta b{color:var(--ok);font-weight:500}
+.feed .delta b.neg{color:var(--bad)}
+.feed .note{font-size:12px;color:var(--muted);overflow-wrap:anywhere}
+.feed .when{font-family:var(--mono);font-size:10px;color:var(--faint)}
+.teams{display:flex;flex-direction:column}
+.team{padding:10px 16px;border-bottom:1px solid var(--line);display:flex;flex-direction:column;gap:6px;background:transparent;border-left:0;border-right:0;border-top:0;text-align:left}
+.team:last-child{border-bottom:0}
+.team:hover{background:var(--bg)}
+.team .tl{display:flex;justify-content:space-between;gap:8px;font-size:13px;font-weight:600}
+.team .tl span{font-family:var(--mono);font-weight:500}
+.team small{color:var(--faint);font-size:11px}
+
+/* modal */
+.scrim{position:fixed;inset:0;background:var(--scrim);display:grid;place-items:center;padding:16px;z-index:20}
+.modal{background:var(--surface);border:1px solid var(--line);border-radius:var(--r2);width:min(640px,100%);max-height:calc(100% - 32px);overflow:auto;box-shadow:0 18px 50px rgba(0,0,0,.25)}
+.modal.narrow{width:min(440px,100%)}
+.m-head{padding:16px 20px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;gap:12px}
+.m-head h3{margin:0;font-size:16px}
+.m-body{padding:16px 20px;display:flex;flex-direction:column;gap:14px}
+.m-foot{padding:12px 20px;border-top:1px solid var(--line);display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap}
+.m-foot .left{margin-right:auto}
+.field{display:flex;flex-direction:column;gap:5px;min-width:0}
+.field label{font-size:12px;font-weight:600;color:var(--muted)}
+.field input,.field select,.field textarea{border:1px solid var(--line);background:var(--bg);border-radius:var(--r2);padding:8px 10px;font:inherit;font-size:13px;color:var(--ink);width:100%}
+.field textarea{min-height:64px;resize:vertical}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+.kr-edit{border:1px solid var(--line);border-radius:var(--r2);padding:12px;display:flex;flex-direction:column;gap:10px;background:var(--bg)}
+.kr-edit .grid4{display:grid;grid-template-columns:1.4fr 1fr 1fr .8fr;gap:8px}
+.kr-edit .grid5{display:grid;grid-template-columns:1.3fr .9fr .9fr .8fr .9fr;gap:8px}
+.wt{font-family:var(--mono);font-size:10px;padding:1px 6px;border-radius:var(--r1);background:var(--blue-wash);color:var(--blue-deep)}
+.wt-sum{display:flex;flex-wrap:wrap;gap:6px;align-items:center;font-size:12px;color:var(--muted)}
+.wt-sum .wt{font-size:11px}
+.wt-sum.over{color:var(--bad)}
+.kr-edit .hd{display:flex;justify-content:space-between;align-items:center}
+.seg{display:flex;border:1px solid var(--line);border-radius:var(--r2);overflow:hidden}
+.seg button{flex:1;border:0;background:transparent;padding:8px;font-size:13px;font-weight:600;color:var(--muted);display:flex;align-items:center;justify-content:center;gap:6px}
+.seg button+button{border-left:1px solid var(--line)}
+.seg button[aria-pressed="true"]{background:var(--blue-wash);color:var(--blue-deep)}
+.hint{font-size:12px;color:var(--muted)}
+.err{font-size:12px;color:var(--bad)}
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:9px 16px;border-radius:var(--r2);font-size:13px;font-weight:600;z-index:30}
+
+/* tabs, initiatives, KPIs */
+.tabs{display:flex;gap:2px;background:var(--sunk);padding:3px;border-radius:var(--r2)}
+.tabs button{border:0;background:transparent;padding:5px 12px;border-radius:var(--r1);font-size:13px;font-weight:600;color:var(--muted)}
+.tabs button[aria-selected="true"]{background:var(--surface);color:var(--ink);box-shadow:0 1px 2px rgba(14,23,38,.08)}
+.tabs .count{font-family:var(--mono);font-weight:500;font-size:11px;color:var(--faint);margin-left:4px}
+.row.init .t-name{font-weight:500;color:var(--muted)}
+.init-mark{flex:none;width:20px;height:20px;display:grid;place-items:center;color:var(--faint)}
+.istat{border:1px solid var(--line);background:transparent;border-radius:999px;padding:2px 9px;font-size:11px;font-weight:600;white-space:nowrap}
+.istat.todo{color:var(--muted)}
+.istat.doing{color:var(--blue-deep);border-color:var(--blue);background:var(--blue-wash)}
+.istat.done{color:var(--ok);border-color:transparent;background:var(--ok-wash)}
+.istat.blocked{color:var(--bad);border-color:transparent;background:var(--bad-wash)}
+button.istat:hover{border-color:var(--blue)}
+.row.init.is-done .t-name{text-decoration:line-through;text-decoration-color:var(--faint)}
+.intro{padding:10px 16px;border-bottom:1px solid var(--line);font-size:12px;color:var(--muted);background:var(--bg)}
+.kcols{display:grid;grid-template-columns:minmax(0,1fr) 120px 150px 96px 100px 64px;gap:12px;align-items:center}
+.kpi-val{font-family:var(--mono);font-size:13px}
+.kpi-val small{color:var(--faint);font-size:11px;display:block}
+.spark{display:block;width:100%;height:28px}
+.h-ok{background:var(--ok-wash);color:var(--ok)}
+.h-warn{background:var(--warn-wash);color:var(--warn)}
+.h-bad{background:var(--bad-wash);color:var(--bad)}
+.h-none{background:var(--idle-wash);color:var(--muted)}
+.hist{display:flex;flex-direction:column;gap:4px;max-height:160px;overflow:auto;font-family:var(--mono);font-size:12px}
+.hist div{display:flex;justify-content:space-between;padding:4px 8px;border-radius:var(--r1);background:var(--bg)}
+
+@media (max-width:1100px){
+  .main{grid-template-columns:1fr}
+  .summary{grid-template-columns:1fr 1fr}
+  .summary>section:nth-child(3){border-left:0}
+  .summary>section:nth-child(n+3){border-top:1px solid var(--line)}
+}
+@media (max-width:820px){
+  .cols{grid-template-columns:minmax(0,1fr) 120px 64px}
+  .cols .c-owner,.cols .c-dates,.cols .c-status{display:none}
+  .tree-head .c-owner,.tree-head .c-dates,.tree-head .c-status{display:none}
+  .kcols{grid-template-columns:minmax(0,1fr) 110px 90px 64px}
+  .kcols .c-owner,.kcols .c-spark{display:none}
+}
+@media (max-width:560px){
+  .summary{grid-template-columns:1fr}
+  .summary>section+section{border-left:0;border-top:1px solid var(--line)}
+  .grid2,.grid3,.kr-edit .grid4,.kr-edit .grid5{grid-template-columns:1fr 1fr}
+  .cols{grid-template-columns:minmax(0,1fr) 92px 30px}
+  .kcols{grid-template-columns:minmax(0,1fr) 96px 30px}
+  .kcols .c-health{display:none}
+  .prog .bar{display:none}
+  .acts .icon-btn.edit-only{display:none}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+
+/* landing (đăng nhập) + user chip — cùng format TA Performance Dashboard */
+.landing{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px 0}
+.landing-card{max-width:560px;text-align:center}
+.landing-logo{width:76px;height:64px;margin:0 auto 18px;background:var(--blue);border-radius:var(--r2);display:flex;align-items:center;justify-content:center}
+.landing-logo svg{width:44px;height:auto}
+.landing-kicker{font-family:var(--mono);color:var(--muted);font-weight:500;font-size:12px;letter-spacing:.06em;text-transform:uppercase;margin:0 0 10px}
+.landing-card h2{font-size:34px;font-weight:700;margin:0 0 14px;line-height:1.15;letter-spacing:-.01em}
+.landing-desc{color:var(--muted);font-size:16px;line-height:1.55;margin:0 0 26px}
+.btn-signin{background:var(--blue-deep);color:#fff;border:0;border-radius:var(--r2);padding:13px 28px;font-size:15px;font-weight:600}
+.btn-signin:hover{filter:brightness(1.08)}
+.landing-note{color:var(--faint);font-size:12.5px;margin-top:18px}
+.landing-error{margin-top:14px;color:var(--bad);font-weight:600}
+.brand-badge{width:40px;height:40px;background:var(--blue);border-radius:var(--r2);display:flex;align-items:center;justify-content:center;flex:none}
+.brand-badge svg{width:24px;height:auto}
+.user-chip{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--muted)}
+.user-chip .av{width:30px;height:30px;border-radius:999px;background:var(--blue-wash);color:var(--blue-deep);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:12px}
+.user-chip b{color:var(--ink);font-weight:600}
+@media (max-width:640px){.user-chip .nm{display:none}.landing-card h2{font-size:26px}}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+<section id="landing" class="landing" hidden>
+  <div class="landing-card">
+    <div class="landing-logo"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 57 35" fill="none"><path d="M56.8154 0V35H29.4355V26.25H48.3164V7.9541H37.8486V13.125H43.4854V21.4775H29.4355V0H56.8154Z" fill="#FFFFFF"/><path d="M27.3799 0V21.4775H13.2871V13.125H18.9238V7.9541H8.45508V26.25H27.3799V35H0V0H27.3799Z" fill="#FFFFFF"/></svg></div>
+    <p class="landing-kicker">EASTGATE SOFTWARE · OKR · KPI · INITIATIVES</p>
+    <h2>Cả công ty cùng nhìn một bộ mục tiêu.</h2>
+    <p class="landing-desc">Cây OKR từ Company tới từng team, check-in tiến độ key result, KPI vận hành theo tháng và các initiative đang chạy, cập nhật ngay khi có người ghi nhận.</p>
+    <button id="btn-signin" class="btn-signin">Sign in with Microsoft</button>
+    <p class="landing-note">Dữ liệu lưu trên SharePoint site ORG HR Admin. Tài khoản Eastgate của bạn cần có quyền truy cập site đó.</p>
+    <p id="landing-error" class="landing-error" hidden></p>
+  </div>
+</section>
+<div id="app" hidden>
+  <header class="top">
+    <div class="brand">
+      <div class="brand-badge"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 57 35" fill="none"><path d="M56.8154 0V35H29.4355V26.25H48.3164V7.9541H37.8486V13.125H43.4854V21.4775H29.4355V0H56.8154Z" fill="#FFFFFF"/><path d="M27.3799 0V21.4775H13.2871V13.125H18.9238V7.9541H8.45508V26.25H27.3799V35H0V0H27.3799Z" fill="#FFFFFF"/></svg></div>
+      <div>
+        <h1>OKR <select id="cycle" class="cycle-sel" aria-label="Chọn chu kỳ"></select></h1>
+        <div class="sub" id="cycle-sub">EASTGATE SOFTWARE · CYCLE JAN 01 → DEC 31</div>
+      </div>
+    </div>
+    <div class="spacer"></div>
+    <button class="btn primary" id="btn-new" hidden>＋ Objective</button>
+    <div class="user-chip" id="user-chip" hidden><span class="av" id="user-av"></span><span class="nm"><b id="user-name"></b></span><button class="btn ghost" id="btn-signout" title="Đăng xuất">Đăng xuất</button></div>
+  </header>
+
+  <div class="notice" id="notice"><span class="dot"></span><span id="notice-text">Đang kết nối dữ liệu…</span></div>
+
+  <div class="summary" id="summary">
+    <section>
+      <div class="eyebrow">Objectives</div>
+      <div class="overall"><div class="big num" id="s-count">–</div><div class="pct num" id="s-pct">0%</div></div>
+      <div class="hero-bar" title="Vạch đen = tiến độ kỳ vọng theo ngày"><i id="s-bar" style="width:0"></i><b id="s-mark" style="left:0"></b></div>
+      <div class="meta-list" id="s-meta"></div>
+    </section>
+    <section>
+      <div class="eyebrow">Goal status</div>
+      <div class="ring-row"><svg id="s-ring" width="92" height="92" viewBox="0 0 92 92" aria-label="Phân bổ trạng thái"></svg><div class="legend" id="s-legend"></div></div>
+    </section>
+    <section>
+      <div class="eyebrow">Confidence · key results</div>
+      <div class="conf-bar" id="s-conf"></div>
+      <div class="legend" id="s-conf-legend"></div>
+    </section>
+    <section>
+      <div class="eyebrow">Pace</div>
+      <div class="pace" id="s-pace"></div>
+    </section>
+  </div>
+
+  <div class="main">
+    <div class="panel">
+      <div class="panel-head">
+        <div class="tabs" role="tablist">
+          <button role="tab" id="tab-okr" aria-selected="true" data-tab="okr">OKRs<span class="count" id="n-okr"></span></button>
+          <button role="tab" id="tab-kpi" aria-selected="false" data-tab="kpi">KPIs<span class="count" id="n-kpi"></span></button>
+        </div>
+        <div class="spacer" style="flex:1"></div>
+        <button class="btn ghost" id="btn-expand">Mở tất cả</button>
+        <button class="btn" id="btn-new-kpi" hidden>＋ KPI</button>
+      </div>
+      <div class="filters">
+        <input class="search" id="q" type="search" placeholder="Tìm objective, key result, initiative, owner…" aria-label="Tìm kiếm">
+        <select class="sel" id="f-team" aria-label="Lọc theo team"><option value="">Tất cả team</option></select>
+        <div class="chips" id="f-status"></div>
+      </div>
+      <div id="view-okr">
+        <div class="intro"><b>OKR</b> = thay đổi muốn tạo ra trong kỳ. <b>Key result</b> đo kết quả và quyết định % tiến độ. <b>Initiative</b> là việc cần làm để đẩy KR, chỉ theo dõi trạng thái, không tính vào %.</div>
+        <div class="tree-head cols eyebrow">
+          <span>Objective / Key result / Initiative</span><span class="c-owner">Owner</span><span class="c-dates">Timeline</span><span>Progress</span><span class="c-status">Status</span><span></span>
+        </div>
+        <div id="tree"></div>
+      </div>
+      <div id="view-kpi" hidden>
+        <div class="intro"><b>KPI</b> = chỉ số vận hành cần giữ ổn định (doanh thu tháng, tỷ lệ nghỉ việc, utilization…). KPI không có hạn kết thúc, chỉ cần nằm trong ngưỡng. Khi KPI ra khỏi ngưỡng lâu, hãy đặt một OKR để cải thiện nó.</div>
+        <div class="tree-head kcols eyebrow">
+          <span>KPI</span><span class="c-owner">Owner</span><span class="c-spark">6 kỳ gần nhất</span><span>Mới nhất</span><span class="c-health">Health</span><span></span>
+        </div>
+        <div id="kpis"></div>
+      </div>
+    </div>
+
+    <aside class="rail">
+      <div class="panel">
+        <div class="panel-head"><h2>Teams</h2></div>
+        <div class="teams" id="teams"></div>
+      </div>
+      <div class="panel">
+        <div class="panel-head"><h2>Check-in gần đây</h2></div>
+        <ul class="feed" id="feed"></ul>
+      </div>
+    </aside>
+  </div>
+</div>
+</div>
+
+<div id="modal-root"></div>
+
+<script type="module">
+import { CONFIG } from "./js/config.js";
+import { initAuth, signIn, signOut, getToken, currentAccount } from "./js/auth.js";
+import { createStore, PermissionError } from "./js/store.js";
+(() => {
+  const STATUS = {
+    done:{label:"Done",color:"var(--done)"},
+    ontrack:{label:"On track",color:"var(--ok)"},
+    behind:{label:"Behind",color:"var(--warn)"},
+    atrisk:{label:"At risk",color:"var(--bad)"},
+    notstarted:{label:"Not started",color:"var(--idle)"},
+  };
+  const CONF = {
+    high:{label:"High",color:"var(--ok)"},
+    medium:{label:"Medium",color:"var(--warn)"},
+    low:{label:"Low",color:"var(--bad)"},
+    none:{label:"Chưa báo",color:"var(--idle)"},
+  };
+  const LEVELS = ["Company","Department","Team","Personal"];
+  const ISTAT = { todo:"To do", doing:"Đang làm", done:"Xong", blocked:"Bị chặn" };
+  const ISTAT_NEXT = { todo:"doing", doing:"done", done:"todo", blocked:"doing" };
+  const HEALTH = { ok:"Đạt", warn:"Sát ngưỡng", bad:"Ngoài ngưỡng", none:"Chưa có số" };
+
+  const state = { all: [], cycle: (() => { try { return localStorage.getItem("okr.cycle") || String(new Date().getFullYear()); } catch { return String(new Date().getFullYear()); } })(), objectives: [], checkins: [], kpis: [], tab:"okr", loaded:false, db:null, canWrite:false,
+    q:"", team:"", status:"", opened:new Set(), collapsed:new Set(), allOpen:false };
+
+  const $ = s => document.querySelector(s);
+  const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+  const today = () => new Date();
+  const fmtPct = p => (Math.round(p*1000)/10).toFixed(p>=1&&p<10?1:1).replace(/\.0$/,"") + "%";
+  const fmtNum = n => { const v = Number(n); if (!isFinite(v)) return "–"; return Math.abs(v)>=1000 ? v.toLocaleString("en-US",{maximumFractionDigits:0}) : (+v.toFixed(2)).toString(); };
+  const fmtDate = d => { if (!d) return "–"; const x = new Date(d+"T00:00:00"); return x.toLocaleDateString("en-GB",{day:"2-digit",month:"short"}); };
+  const uid = () => Math.random().toString(36).slice(2,10);
+
+  // ---------- progress logic ----------
+  function krPct(kr){
+    const s = +kr.start||0, t = +kr.target, c = +kr.current;
+    if (!isFinite(t) || !isFinite(c)) return 0;
+    if (t === s) return c >= t ? 1 : 0;
+    return Math.max(0, (c - s) / (t - s));
+  }
+  const cycleOf = o => String(o.cycle || (o.start||"2026").slice(0,4));
+  const cyStart = () => `${state.cycle}-01-01`, cyEnd = () => `${state.cycle}-12-31`;
+  function applyCycle(){ state.objectives = state.all.filter(o => cycleOf(o) === state.cycle); }
+  function renderCycles(){
+    const now = new Date().getFullYear();
+    const ys = [...new Set([String(now), String(now+1), state.cycle, ...state.all.map(cycleOf)])].sort();
+    $("#cycle").innerHTML = ys.map(y=>`<option ${y===state.cycle?"selected":""}>${y}</option>`).join("");
+  }
+  const isPh = k => /\[\?\]/.test(String(k.title||""));
+  const childrenOf = id => state.objectives.filter(o => (o.parentId||"") === (id||"")).sort((a,b)=>(a.order??0)-(b.order??0)||String(a.title).localeCompare(b.title));
+  // Tỉ trọng: ô có số giữ nguyên, ô trống chia đều phần còn lại tới 100, rồi chuẩn hoá tổng = 1.
+  const hasW = w => w !== null && w !== undefined && w !== "" && isFinite(+w) && +w >= 0;
+  function normWeights(ws){
+    if (!ws.length) return [];
+    const setSum = ws.filter(hasW).reduce((a,w)=>a+(+w),0), blanks = ws.filter(w=>!hasW(w)).length;
+    const rest = blanks ? Math.max(0, 100-setSum)/blanks : 0;
+    const raw = ws.map(w => hasW(w) ? +w : rest), tot = raw.reduce((a,b)=>a+b,0);
+    return tot > 0 ? raw.map(r=>r/tot) : ws.map(()=>1/ws.length);
+  }
+  // Các thành phần tạo nên % của objective: KR + objective con, kèm tỉ trọng đã chuẩn hoá.
+  function contributors(o){
+    const items = [...(o.krs||[]).map(k=>({id:k.id, kind:"kr", ref:k, w:k.weight})),
+                   ...childrenOf(o.id).map(c=>({id:c.id, kind:"obj", ref:c, w:c.weight}))];
+    const ns = normWeights(items.map(i=>i.w));
+    const custom = items.some(i=>hasW(i.w));
+    return items.map((i,n)=>({...i, share:ns[n], custom}));
+  }
+  function shareOf(parent, id){ if (!parent) return null; const c = contributors(parent).find(x=>x.id===id); return c && c.custom ? c.share : null; }
+  function objPct(o, seen = new Set()){
+    if (seen.has(o.id)) return 0; seen.add(o.id);
+    const cs = contributors(o);
+    if (!cs.length) return 0;
+    return cs.reduce((a,c)=>a + c.share * Math.min(1, c.kind==="kr" ? krPct(c.ref) : objPct(c.ref, seen)), 0);
+  }
+  function rootShare(id){ const roots = childrenOf(""); if (!roots.some(r=>hasW(r.weight))) return null; const ns = normWeights(roots.map(r=>r.weight)); const i = roots.findIndex(r=>r.id===id); return i<0 ? null : ns[i]; }
+  const wtTag = sh => sh===null ? "" : `<span class="wt" title="Tỉ trọng trong objective cha">${fmtPct(sh)}</span>`;
+  function expected(o){
+    const s = new Date((o.start||cyStart())+"T00:00:00"), e = new Date((o.end||cyEnd())+"T23:59:59");
+    return Math.max(0, Math.min(1, (today()-s)/(e-s)));
+  }
+  function hasActivity(o){
+    return (o.krs||[]).some(k => +k.current !== +(k.start||0)) || childrenOf(o.id).some(hasActivity);
+  }
+  function statusOfPct(p, exp, active){
+    if (p >= 1) return "done";
+    if (!active) return "notstarted";
+    if (p >= exp - 0.05) return "ontrack";
+    if (p >= exp - 0.2) return "behind";
+    return "atrisk";
+  }
+  const objStatus = o => statusOfPct(objPct(o), expected(o), hasActivity(o));
+  const krStatus = (k, o) => statusOfPct(krPct(k), expected(o), +k.current !== +(k.start||0));
+
+  // ---------- rendering ----------
+  function render(){
+    renderCycles(); renderNotice(); renderSummary(); renderFilters(); renderView(); renderTeams(); renderFeed();
+    $("#btn-new").hidden = !state.canWrite;
+  }
+
+  function renderNotice(){
+    const n = $("#notice"), t = $("#notice-text");
+    if (!state.db){ n.className="notice warn"; t.textContent = state.loaded ? "Không tải được dữ liệu từ SharePoint — thử tải lại trang." : "Đang kết nối dữ liệu…"; return; }
+    n.className = "notice";
+    const last = state.checkins[0];
+    const samples = state.all.filter(o=>o.sample).length + state.kpis.filter(k=>k.sample).length;
+    t.innerHTML = (last ? `Cập nhật lần cuối ${esc(timeAgo(last.at))} · ` : "") +
+      `${state.objectives.length} objectives · ${state.objectives.reduce((a,o)=>a+(o.krs||[]).length,0)} key results · ${state.kpis.length} KPI` +
+      (samples && state.canWrite ? ` · <button class="btn ghost" id="btn-clear-sample" style="padding:2px 6px;font-size:12px;color:var(--warn)">Xoá ${samples} mục mẫu</button>` : "");
+    const b = $("#btn-clear-sample"); if (b) b.onclick = clearSamples;
+  }
+
+  function renderSummary(){
+    const objs = state.objectives;
+    const roots = childrenOf("");
+    const rw = normWeights(roots.map(o=>o.weight));
+    const overall = roots.reduce((a,o,i)=>a+rw[i]*Math.min(1,objPct(o)),0);
+    const d0 = new Date(cyStart()+"T00:00:00"), d1 = new Date(cyEnd()+"T23:59:59");
+    const exp = Math.max(0,Math.min(1,(today()-d0)/(d1-d0)));
+    const cyDays = Math.round((d1-d0)/864e5);
+    const dayN = Math.ceil((today()-d0)/864e5);
+    const phase = dayN < 1 ? `BẮT ĐẦU SAU ${Math.ceil((d0-today())/864e5)} NGÀY` : dayN > cyDays ? "ĐÃ KẾT THÚC" : `DAY ${dayN} OF ${cyDays}`;
+    $("#cycle-sub").textContent = `EASTGATE SOFTWARE · ${state.cycle} · JAN 01 → DEC 31 · ${phase}`;
+    $("#s-count").textContent = objs.length;
+    $("#s-pct").textContent = fmtPct(overall);
+    $("#s-bar").style.width = (overall*100)+"%";
+    $("#s-mark").style.left = `calc(${exp*100}% - 1px)`;
+    const byLevel = LEVELS.map(l => [l, objs.filter(o=>o.level===l).length]).filter(x=>x[1]);
+    $("#s-meta").innerHTML = (byLevel.length ? `<span>${byLevel.map(([l,n])=>`${n} ${l}`).join(" · ")}</span>` : `<span>Chưa có objective</span>`) +
+      `<span>Kỳ vọng hôm nay: <b class="num">${fmtPct(exp)}</b></span>`;
+
+    const counts = Object.fromEntries(Object.keys(STATUS).map(k=>[k,0]));
+    objs.forEach(o => counts[objStatus(o)]++);
+    const total = objs.length;
+    let svg = `<circle cx="46" cy="46" r="36" fill="none" stroke="var(--sunk)" stroke-width="10"/>`;
+    const C = 2*Math.PI*36; let off = 0;
+    if (total) Object.keys(STATUS).forEach(k => { const len = counts[k]/total*C; if (!len) return;
+      svg += `<circle cx="46" cy="46" r="36" fill="none" stroke="${STATUS[k].color}" stroke-width="10" stroke-dasharray="${Math.max(0,len-1.5)} ${C}" stroke-dashoffset="${-off}" transform="rotate(-90 46 46)"/>`; off += len; });
+    svg += `<text x="46" y="44" text-anchor="middle" font-family="Montserrat,sans-serif" font-weight="700" font-size="18" fill="var(--ink)">${total}</text><text x="46" y="58" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="8" fill="var(--faint)">GOALS</text>`;
+    $("#s-ring").innerHTML = svg;
+    $("#s-legend").innerHTML = Object.keys(STATUS).map(k=>`<span><em style="background:${STATUS[k].color}"></em><strong class="num">${counts[k]}</strong>${STATUS[k].label}</span>`).join("");
+
+    const krs = objs.flatMap(o=>o.krs||[]);
+    const cc = {high:0,medium:0,low:0,none:0}; krs.forEach(k => cc[k.confidence in cc ? k.confidence : "none"]++);
+    $("#s-conf").innerHTML = krs.length ? Object.keys(CONF).map(k=>cc[k]?`<i style="width:${cc[k]/krs.length*100}%;background:${CONF[k].color}" title="${CONF[k].label}: ${cc[k]}"></i>`:"").join("") : "";
+    $("#s-conf-legend").innerHTML = Object.keys(CONF).map(k=>`<span><em style="background:${CONF[k].color}"></em><strong class="num">${cc[k]}</strong>${CONF[k].label}</span>`).join("");
+
+    const ahead = objs.filter(o=>objPct(o)>=expected(o)).length;
+    const weekAgo = Date.now()-7*864e5;
+    const ci7 = state.checkins.filter(c=>new Date(c.at).getTime()>=weekAgo).length;
+    const inits = objs.flatMap(o=>o.initiatives||[]);
+    const initsDone = inits.filter(i=>i.status==="done").length;
+    const kpiBad = state.kpis.filter(k=>kpiHealth(k)==="bad").length;
+    const stale = krs.filter(k=>!k.updatedAt || Date.now()-new Date(k.updatedAt).getTime() > 30*864e5).length;
+    $("#s-pace").innerHTML = `
+      <div class="row"><span>Objective ≥ tiến độ kỳ vọng</span><b>${ahead}/${total}</b></div>
+      <div class="row"><span>Check-in 7 ngày qua</span><b>${ci7}</b></div>
+      <div class="row"><span>KR chưa cập nhật &gt;30 ngày</span><b style="color:${stale?'var(--warn)':'var(--ink)'}">${stale}</b></div>
+      <div class="row"><span>Initiative xong</span><b>${initsDone}/${inits.length}</b></div>
+      <div class="row"><span>KPI ngoài ngưỡng</span><b style="color:${kpiBad?'var(--bad)':'var(--ink)'}">${kpiBad}/${state.kpis.length}</b></div>`;
+  }
+
+  function teamsList(){ return [...new Set([...state.objectives, ...state.kpis].map(o=>o.team).filter(Boolean))].sort(); }
+
+  function renderFilters(){
+    const sel = $("#f-team"), cur = state.team;
+    sel.innerHTML = `<option value="">Tất cả team</option>` + teamsList().map(t=>`<option ${t===cur?"selected":""}>${esc(t)}</option>`).join("");
+    $("#f-status").hidden = state.tab !== "okr";
+    $("#f-status").innerHTML = [["","Tất cả"],...Object.keys(STATUS).map(k=>[k,STATUS[k].label])]
+      .map(([k,l])=>`<button class="chip" data-st="${k}" aria-pressed="${state.status===k}">${l}</button>`).join("");
+  }
+
+  const filtering = () => state.q || state.team || state.status;
+  function matchesSelf(o){
+    const q = state.q.toLowerCase();
+    const textHit = !q || [o.title,o.owner,o.team,...(o.krs||[]).flatMap(k=>[k.title,k.owner]),...(o.initiatives||[]).flatMap(i=>[i.title,i.owner])].some(s=>String(s||"").toLowerCase().includes(q));
+    const teamHit = !state.team || o.team === state.team;
+    const stHit = !state.status || objStatus(o) === state.status;
+    return textHit && teamHit && stHit;
+  }
+  function visible(o, seen=new Set()){
+    if (seen.has(o.id)) return false; seen.add(o.id);
+    return matchesSelf(o) || childrenOf(o.id).some(c=>visible(c, seen));
+  }
+
+  const caretSvg = `<svg width="10" height="10" viewBox="0 0 10 10"><path d="M3 1.5 6.5 5 3 8.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+  const ring = (p, color) => { const C=2*Math.PI*7; return `<svg width="20" height="20" viewBox="0 0 20 20" style="flex:none;margin-top:1px"><circle cx="10" cy="10" r="7" fill="none" stroke="var(--sunk)" stroke-width="3"/><circle cx="10" cy="10" r="7" fill="none" stroke="${color}" stroke-width="3" stroke-dasharray="${Math.min(1,p)*C} ${C}" transform="rotate(-90 10 10)" stroke-linecap="round"/></svg>`; };
+  const icoCheck = `<svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12.5 6 8.5l3 3 5-6"/><path d="M10.5 5.5H14v3.5"/></svg>`;
+  const icoEdit = `<svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M10.5 2.5l3 3L5 14H2v-3z"/></svg>`;
+
+  function renderTree(){
+    const el = $("#tree");
+    if (!state.loaded){ el.innerHTML = `<div class="empty">Đang tải OKR…</div>`; return; }
+    if (!state.objectives.length){
+      el.innerHTML = `<div class="empty"><h3>Chưa có OKR nào</h3>${state.canWrite ? `Bấm <b>＋ Objective</b> để tạo Company OKR đầu tiên, rồi thêm objective con cho từng phòng ban và team.` : `Khi admin tạo OKR, cây mục tiêu sẽ hiện ở đây.`}</div>`; return;
+    }
+    const rows = [];
+    const walk = (o, depth, seen) => {
+      if (seen.has(o.id) || !visible(o)) return; seen.add(o.id);
+      const kids = childrenOf(o.id).filter(c=>visible(c));
+      const krs = o.krs||[];
+      const open = state.allOpen || (filtering() && !matchesSelf(o)) || (depth===0 ? !state.collapsed.has(o.id) : state.opened.has(o.id));
+      const p = objPct(o), st = objStatus(o);
+      const inits = o.initiatives||[];
+      const hasKids = kids.length || krs.length || inits.length;
+      rows.push(`<div class="row cols lvl-${Math.min(depth,2)}">
+        <div class="title-cell" style="padding-left:${depth*22}px">
+          <button class="caret ${hasKids?"":"blank"}" data-toggle="${o.id}" aria-expanded="${open}" aria-label="Mở/đóng">${caretSvg}</button>
+          ${ring(p, STATUS[st].color)}
+          <div class="t-main"><div class="t-name">${esc(o.title)}</div>
+            <div class="t-sub">${wtTag(o.parentId ? shareOf(state.objectives.find(x=>x.id===o.parentId), o.id) : rootShare(o.id))}<span class="tag">${esc(o.level||"Objective")}</span>${o.team?`<span>${esc(o.team)}</span>`:""}${o.sample?`<span class="tag sample">Mẫu</span>`:""}${krs.length?`<span>${krs.length} KR</span>`:""}${inits.length?`<span>· ${inits.filter(i=>i.status==="done").length}/${inits.length} initiative xong</span>`:""}</div></div>
+        </div>
+        <div class="owner c-owner" title="${esc(o.owner)}">${esc(o.owner||"–")}</div>
+        <div class="dates c-dates">${fmtDate(o.start)} – ${fmtDate(o.end)}</div>
+        <div class="prog"><span class="p num">${fmtPct(p)}</span><span class="bar"><i style="width:${Math.min(1,p)*100}%;background:${STATUS[st].color}"></i></span></div>
+        <div class="c-status"><span class="pill st-${st}">${STATUS[st].label}</span></div>
+        <div class="acts">${state.canWrite?`<button class="icon-btn" data-edit="${o.id}" title="Sửa objective" aria-label="Sửa objective">${icoEdit}</button>`:""}</div>
+      </div>`);
+      if (!open) return;
+      krs.forEach(k => {
+        const kp = krPct(k), ks = krStatus(k, o), conf = CONF[k.confidence] ? k.confidence : "none";
+        rows.push(`<div class="row cols kr">
+          <div class="title-cell" style="padding-left:${depth*22+28}px">
+            <span class="kr-mark"><i></i></span>
+            <div class="t-main"><div class="t-name">${esc(k.title)}</div>
+              <div class="t-sub">${wtTag(shareOf(o, k.id))}${isPh(k)?`<span class="tag ph">Chờ chốt số</span>`:""}<span><span class="conf-dot" style="background:${CONF[conf].color}"></span> Confidence ${CONF[conf].label}</span>${k.updatedAt?`<span>· ${esc(timeAgo(k.updatedAt))}</span>`:""}</div></div>
+          </div>
+          <div class="owner c-owner" title="${esc(k.owner||o.owner)}">${esc(k.owner||o.owner||"–")}</div>
+          <div class="dates c-dates">${fmtDate(o.start)} – ${fmtDate(o.end)}</div>
+          <div><div class="prog"><span class="p num">${fmtPct(kp)}</span><span class="bar"><i style="width:${Math.min(1,kp)*100}%;background:${STATUS[ks].color}"></i></span></div>
+            <div class="kr-val num">${fmtNum(k.current)} / ${fmtNum(k.target)} ${esc(k.unit||"")}</div></div>
+          <div class="c-status"><span class="pill st-${ks}">${STATUS[ks].label}</span></div>
+          <div class="acts">${state.canWrite?`<button class="icon-btn" data-checkin="${o.id}|${k.id}" title="Check-in" aria-label="Check-in key result">${icoCheck}</button>`:""}</div>
+        </div>`);
+      });
+      const krOrder = Object.fromEntries(krs.map((k,i)=>[k.id,i]));
+      [...inits].sort((a,b)=>(krOrder[a.krId]??99)-(krOrder[b.krId]??99)).forEach(i => {
+        const kr = krs.find(k=>k.id===i.krId);
+        const st = ISTAT[i.status] ? i.status : "todo";
+        const overdue = i.due && st!=="done" && new Date(i.due+"T23:59:59") < today();
+        rows.push(`<div class="row cols init ${st==="done"?"is-done":""}">
+          <div class="title-cell" style="padding-left:${depth*22+28}px">
+            <span class="init-mark"><svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="1.5" y="1.5" width="9" height="9" rx="2"/>${st==="done"?'<path d="M3.8 6.2 5.3 7.7 8.3 4.5" stroke-linecap="round" stroke-linejoin="round"/>':""}</svg></span>
+            <div class="t-main"><div class="t-name">${esc(i.title)}</div>
+              <div class="t-sub"><span class="tag">Initiative</span>${kr?`<span>→ ${esc(kr.title.length>48?kr.title.slice(0,48)+"…":kr.title)}</span>`:`<span>→ Objective chung</span>`}</div></div>
+          </div>
+          <div class="owner c-owner" title="${esc(i.owner)}">${esc(i.owner||"–")}</div>
+          <div class="dates c-dates" style="${overdue?"color:var(--bad)":""}">${i.due?"Hạn "+fmtDate(i.due):"–"}</div>
+          <div class="hint" style="font-size:11px">Không tính %</div>
+          <div class="c-status">${state.canWrite?`<button class="istat ${st}" data-init="${o.id}|${esc(i.id)}" title="Bấm để đổi trạng thái">${ISTAT[st]}</button>`:`<span class="istat ${st}">${ISTAT[st]}</span>`}</div>
+          <div class="acts"></div>
+        </div>`);
+      });
+      kids.forEach(c => walk(c, depth+1, seen));
+    };
+    const seen = new Set();
+    childrenOf("").forEach(o => walk(o, 0, seen));
+    // orphans (parent deleted)
+    state.objectives.filter(o => o.parentId && !state.objectives.some(p=>p.id===o.parentId)).forEach(o=>walk(o,0,seen));
+    el.innerHTML = rows.length ? rows.join("") : `<div class="empty">Không có objective nào khớp bộ lọc.</div>`;
+  }
+
+  function renderView(){
+    $("#view-okr").hidden = state.tab !== "okr";
+    $("#view-kpi").hidden = state.tab !== "kpi";
+    $("#btn-expand").hidden = state.tab !== "okr";
+    $("#btn-new-kpi").hidden = !(state.canWrite && state.tab === "kpi");
+    $("#tab-okr").setAttribute("aria-selected", state.tab==="okr");
+    $("#tab-kpi").setAttribute("aria-selected", state.tab==="kpi");
+    $("#n-okr").textContent = state.objectives.length || "";
+    $("#n-kpi").textContent = state.kpis.length || "";
+    if (state.tab === "okr") renderTree(); else renderKpis();
+  }
+
+  const kpiVals = k => [...(k.values||[])].filter(v=>isFinite(+v.value)).sort((a,b)=>String(a.period).localeCompare(String(b.period)));
+  function kpiHealthOf(k, v){
+    const t = +k.target; if (!isFinite(v) || !isFinite(t)) return "none";
+    const tol = (isFinite(+k.tolerance) ? +k.tolerance : 10) / 100;
+    if (k.direction === "lower") return v <= t ? "ok" : v <= t*(1+tol) ? "warn" : "bad";
+    return v >= t ? "ok" : v >= t*(1-tol) ? "warn" : "bad";
+  }
+  function kpiHealth(k){ const vs = kpiVals(k); return vs.length ? kpiHealthOf(k, +vs[vs.length-1].value) : "none"; }
+  const HCOLOR = { ok:"var(--ok)", warn:"var(--warn)", bad:"var(--bad)", none:"var(--idle)" };
+  const fmtPeriod = p => { if (!p) return "–"; const [y,m] = String(p).split("-"); return `T${+m}/${y}`; };
+
+  function spark(k){
+    const vs = kpiVals(k).slice(-6); if (!vs.length) return `<span class="hint" style="font-size:11px">Chưa có số</span>`;
+    const nums = vs.map(v=>+v.value), t = +k.target;
+    const lo = Math.min(...nums, isFinite(t)?t:Infinity), hi = Math.max(...nums, isFinite(t)?t:-Infinity);
+    const W = 140, H = 28, pad = 4, span = hi-lo || 1;
+    const x = i => vs.length===1 ? W/2 : pad + i*(W-2*pad)/(vs.length-1);
+    const y = v => H-pad - (v-lo)/span*(H-2*pad);
+    const pts = nums.map((v,i)=>`${x(i).toFixed(1)},${y(v).toFixed(1)}`).join(" ");
+    const last = nums.length-1, hc = HCOLOR[kpiHealthOf(k, nums[last])];
+    return `<svg class="spark" viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" aria-label="Xu hướng">
+      ${isFinite(t)?`<line x1="0" x2="${W}" y1="${y(t).toFixed(1)}" y2="${y(t).toFixed(1)}" stroke="var(--faint)" stroke-dasharray="3 3" stroke-width="1" vector-effect="non-scaling-stroke"/>`:""}
+      <polyline points="${pts}" fill="none" stroke="var(--blue)" stroke-width="1.6" vector-effect="non-scaling-stroke" stroke-linejoin="round"/>
+      <circle cx="${x(last).toFixed(1)}" cy="${y(nums[last]).toFixed(1)}" r="2.6" fill="${hc}"/></svg>`;
+  }
+
+  function renderKpis(){
+    const el = $("#kpis");
+    if (!state.loaded){ el.innerHTML = `<div class="empty">Đang tải KPI…</div>`; return; }
+    const q = state.q.toLowerCase();
+    const list = state.kpis.filter(k => (!state.team || k.team===state.team) && (!q || [k.title,k.owner,k.team].some(s=>String(s||"").toLowerCase().includes(q))))
+      .sort((a,b)=>String(a.team||"").localeCompare(String(b.team||""))||String(a.title).localeCompare(String(b.title)));
+    if (!state.kpis.length){ el.innerHTML = `<div class="empty"><h3>Chưa có KPI nào</h3>${state.canWrite?`Bấm <b>＋ KPI</b> để thêm chỉ số vận hành cần theo dõi hằng tháng.`:`Khi admin thêm KPI, chúng sẽ hiện ở đây.`}</div>`; return; }
+    if (!list.length){ el.innerHTML = `<div class="empty">Không có KPI nào khớp bộ lọc.</div>`; return; }
+    el.innerHTML = list.map(k => {
+      const vs = kpiVals(k), last = vs[vs.length-1], h = kpiHealth(k);
+      const linked = k.objectiveId ? state.all.find(o=>o.id===k.objectiveId) : null;
+      return `<div class="row kcols">
+        <div class="t-main"><div class="t-name">${esc(k.title)}</div>
+          <div class="t-sub"><span class="tag">KPI</span>${k.team?`<span>${esc(k.team)}</span>`:""}${k.sample?`<span class="tag sample">Mẫu</span>`:""}<span>Target ${k.direction==="lower"?"≤":"≥"} ${fmtNum(k.target)} ${esc(k.unit||"")}</span>${linked?`<span>· OKR cải thiện: ${esc(linked.title.length>40?linked.title.slice(0,40)+"…":linked.title)}</span>`:""}</div></div>
+        <div class="owner c-owner" title="${esc(k.owner)}">${esc(k.owner||"–")}</div>
+        <div class="c-spark">${spark(k)}</div>
+        <div class="kpi-val num">${last?`${fmtNum(last.value)} <small>${esc(k.unit||"")} · ${fmtPeriod(last.period)}</small>`:`<small>–</small>`}</div>
+        <div class="c-health"><span class="pill h-${h}">${HEALTH[h]}</span></div>
+        <div class="acts">${state.canWrite?`<button class="icon-btn" data-kpi-val="${esc(k.id)}" title="Nhập số kỳ mới" aria-label="Nhập số KPI">${icoCheck}</button><button class="icon-btn edit-only" data-kpi-edit="${esc(k.id)}" title="Sửa KPI" aria-label="Sửa KPI">${icoEdit}</button>`:""}</div>
+      </div>`;
+    }).join("");
+  }
+
+  function renderTeams(){
+    const teams = teamsList();
+    $("#teams").innerHTML = teams.length ? teams.map(t => {
+      const os = state.objectives.filter(o=>o.team===t);
+      const p = os.length ? os.reduce((a,o)=>a+Math.min(1,objPct(o)),0)/os.length : 0;
+      const krN = os.reduce((a,o)=>a+(o.krs||[]).length,0);
+      const at = os.filter(o=>["atrisk","behind"].includes(objStatus(o))).length;
+      const ks = state.kpis.filter(k=>k.team===t), kb = ks.filter(k=>kpiHealth(k)==="bad").length;
+      return `<button class="team" data-team="${esc(t)}"><div class="tl">${esc(t)}<span class="num">${os.length?fmtPct(p):"–"}</span></div>
+        <div class="bar"><i style="width:${p*100}%;background:var(--blue)"></i></div>
+        <small>${os.length} objectives · ${krN} KR${ks.length?` · ${ks.length} KPI`:""}${at?` · <span style="color:var(--warn)">${at} OKR cần chú ý</span>`:""}${kb?` · <span style="color:var(--bad)">${kb} KPI ngoài ngưỡng</span>`:""}</small></button>`;
+    }).join("") : `<div class="empty" style="padding:20px">Chưa có team.</div>`;
+  }
+
+  function timeAgo(iso){
+    const d = (Date.now()-new Date(iso).getTime())/1000;
+    if (d < 60) return "vừa xong"; if (d < 3600) return Math.floor(d/60)+" phút trước";
+    if (d < 86400) return Math.floor(d/3600)+" giờ trước"; if (d < 86400*30) return Math.floor(d/86400)+" ngày trước";
+    return new Date(iso).toLocaleDateString("en-GB");
+  }
+
+  function renderFeed(){
+    const items = state.checkins.slice(0,12);
+    $("#feed").innerHTML = items.length ? items.map(c => {
+      const diff = (+c.value) - (+c.prev);
+      return `<li><span class="what">${esc(c.krTitle)}</span>
+        <span class="delta num">${fmtNum(c.prev)} → ${fmtNum(c.value)} ${esc(c.unit||"")} <b class="${diff<0?"neg":""}">${diff>=0?"+":""}${fmtNum(diff)}</b>${c.confidence&&CONF[c.confidence]?` · <span class="conf-dot" style="background:${CONF[c.confidence].color}"></span> ${CONF[c.confidence].label}`:""}</span>
+        ${c.note?`<span class="note">${esc(c.note)}</span>`:""}
+        <span class="when">${esc(c.by?c.by+" · ":"")}${esc(timeAgo(c.at))}</span></li>`;
+    }).join("") : `<li><span class="note">Chưa có check-in. Bấm biểu tượng check-in cạnh một key result để cập nhật số liệu.</span></li>`;
+  }
+
+  // ---------- modals ----------
+  function openModal(html, narrow){
+    $("#modal-root").innerHTML = `<div class="scrim" id="scrim"><div class="modal ${narrow?"narrow":""}" role="dialog" aria-modal="true">${html}</div></div>`;
+    $("#scrim").addEventListener("mousedown", e => { if (e.target.id==="scrim") closeModal(); });
+    const f = $("#modal-root input, #modal-root select, #modal-root textarea"); if (f) f.focus();
+  }
+  function closeModal(){ $("#modal-root").innerHTML = ""; }
+  document.addEventListener("keydown", e => { if (e.key==="Escape") closeModal(); });
+
+  function toast(msg){
+    const t = document.createElement("div"); t.className="toast"; t.textContent=msg; document.body.appendChild(t);
+    setTimeout(()=>t.remove(), 2400);
+  }
+
+  function checkinModal(objId, krId){
+    const o = state.objectives.find(x=>x.id===objId); if (!o) return;
+    const k = (o.krs||[]).find(x=>x.id===krId); if (!k) return;
+    let conf = k.confidence || "high";
+    openModal(`
+      <div class="m-head"><h3>Check-in key result</h3><button class="icon-btn" data-close aria-label="Đóng">✕</button></div>
+      <form class="m-body" id="ci-form">
+        <div><div class="eyebrow">${esc(o.title)}</div><div style="font-weight:600;margin-top:4px">${esc(k.title)}</div>
+          <div class="hint num" style="margin-top:4px">Bắt đầu ${fmtNum(k.start||0)} · Mục tiêu ${fmtNum(k.target)} ${esc(k.unit||"")} · Hiện tại ${fmtNum(k.current)}</div></div>
+        <div class="grid2">
+          <div class="field"><label for="ci-val">Giá trị mới</label><input id="ci-val" type="number" step="any" required value="${esc(k.current)}"></div>
+          <div class="field"><label>Tiến độ</label><div id="ci-prev" class="num" style="padding:8px 0;font-family:var(--mono)"></div></div>
+        </div>
+        <div class="field"><label>Mức tự tin đạt mục tiêu</label>
+          <div class="seg" id="ci-conf">${["high","medium","low"].map(c=>`<button type="button" data-c="${c}" aria-pressed="${conf===c}"><span class="conf-dot" style="background:${CONF[c].color}"></span>${CONF[c].label}</button>`).join("")}</div></div>
+        <div class="field"><label for="ci-note">Ghi chú (tùy chọn)</label><textarea id="ci-note" placeholder="Đã làm được gì, vướng ở đâu…"></textarea></div>
+        <div class="field"><label for="ci-by">Người check-in</label><input id="ci-by" type="text" value="${esc(lastBy())}" placeholder="Tên bạn"></div>
+        <div class="err" id="ci-err"></div>
+      </form>
+      <div class="m-foot"><button class="btn" data-close>Huỷ</button><button class="btn primary" id="ci-save">Lưu check-in</button></div>`, true);
+    const upd = () => { const v = +$("#ci-val").value; const p = krPct({...k, current:v}); $("#ci-prev").textContent = `${fmtPct(krPct(k))} → ${isFinite(v)?fmtPct(p):"–"}`; };
+    $("#ci-val").addEventListener("input", upd); upd();
+    $("#ci-conf").addEventListener("click", e => { const b = e.target.closest("[data-c]"); if (!b) return; conf = b.dataset.c;
+      $("#ci-conf").querySelectorAll("button").forEach(x=>x.setAttribute("aria-pressed", x.dataset.c===conf)); });
+    const save = async () => {
+      const v = $("#ci-val").value;
+      if (v === "" || !isFinite(+v)) { $("#ci-err").textContent = "Nhập giá trị là một con số."; return; }
+      const by = $("#ci-by").value.trim(); rememberBy(by);
+      const now = new Date().toISOString();
+      const krs = (o.krs||[]).map(x => x.id===krId ? {...x, current:+v, confidence:conf, updatedAt:now} : {...x});
+      $("#ci-save").disabled = true;
+      try {
+        await state.db.doc("objectives/"+o.id).update({krs, updatedAt:now});
+        await state.db.collection("checkins").add({objectiveId:o.id, krId, krTitle:k.title, unit:k.unit||"", prev:+k.current, value:+v, confidence:conf, note:$("#ci-note").value.trim(), by, at:now});
+        closeModal(); toast("Đã lưu check-in");
+      } catch(e){ $("#ci-save").disabled=false; $("#ci-err").textContent = writeErr(e); }
+    };
+    $("#ci-save").onclick = save;
+    $("#ci-form").addEventListener("submit", e => { e.preventDefault(); save(); });
+  }
+
+  function lastBy(){ let v=""; try { v = localStorage.getItem("okr.by")||""; } catch {} return v || state.me || ""; }
+  function rememberBy(v){ try { localStorage.setItem("okr.by", v); } catch {} }
+  function writeErr(e){
+    if (e instanceof PermissionError) return "Tài khoản của bạn chỉ có quyền xem list OKR trên SharePoint. Nhờ HR cấp quyền Edit để cập nhật.";
+    return "Không lưu được (" + (e?.message||"lỗi") + "). Thử lại sau giây lát.";
+  }
+
+
+  function krRow(k){
+    return `<div class="kr-edit" data-kr="${esc(k.id)}">
+      <div class="hd"><span class="eyebrow">Key result</span><button type="button" class="btn ghost danger" data-rm-kr style="padding:2px 6px;font-size:12px">Xoá KR</button></div>
+      <div class="field"><input data-f="title" type="text" placeholder="VD: Đạt 4 MQL/tháng" value="${esc(k.title)}" aria-label="Tên key result"></div>
+      <div class="grid5">
+        <div class="field"><label>Owner</label><input data-f="owner" type="text" value="${esc(k.owner)}"></div>
+        <div class="field"><label>Bắt đầu</label><input data-f="start" type="number" step="any" value="${esc(k.start ?? 0)}"></div>
+        <div class="field"><label>Mục tiêu</label><input data-f="target" type="number" step="any" value="${esc(k.target ?? 100)}"></div>
+        <div class="field"><label>Đơn vị</label><input data-f="unit" type="text" placeholder="%" value="${esc(k.unit)}"></div>
+        <div class="field"><label>Tỉ trọng %</label><input data-f="weight" type="number" step="any" min="0" placeholder="Chia đều" value="${hasW(k.weight)?esc(k.weight):""}"></div>
+      </div></div>`;
+  }
+
+  function initRow(i, krOpts){
+    const st = ISTAT[i.status] ? i.status : "todo";
+    return `<div class="kr-edit" data-init-row="${esc(i.id)}">
+      <div class="hd"><span class="eyebrow">Initiative</span><button type="button" class="btn ghost danger" data-rm-init style="padding:2px 6px;font-size:12px">Xoá</button></div>
+      <div class="field"><input data-f="title" type="text" placeholder="VD: Launch webinar series Q4" value="${esc(i.title)}" aria-label="Tên initiative"></div>
+      <div class="grid4">
+        <div class="field"><label>Đẩy KR nào</label><select data-f="krId" data-kr-select>${krOpts(i.krId)}</select></div>
+        <div class="field"><label>Owner</label><input data-f="owner" type="text" value="${esc(i.owner)}"></div>
+        <div class="field"><label>Hạn</label><input data-f="due" type="date" value="${esc(i.due)}"></div>
+        <div class="field"><label>Trạng thái</label><select data-f="status">${Object.keys(ISTAT).map(k=>`<option value="${k}" ${k===st?"selected":""}>${ISTAT[k]}</option>`).join("")}</select></div>
+      </div></div>`;
+  }
+
+  function objectiveModal(id, parentId){
+    const o = id ? state.objectives.find(x=>x.id===id) : null;
+    const parent = parentId ? state.objectives.find(x=>x.id===parentId) : null;
+    const d = o || {title:"", level: parent ? LEVELS[Math.min(3, LEVELS.indexOf(parent.level)+1)] : "Company", team: parent?.team||"", owner:"", parentId: parentId||"", start:cyStart(), end:cyEnd(), krs:[]};
+    const descendants = new Set(); const collect = x => childrenOf(x).forEach(c=>{ if(!descendants.has(c.id)){descendants.add(c.id); collect(c.id);} }); if (o) collect(o.id);
+    const parents = state.objectives.filter(x => !o || (x.id!==o.id && !descendants.has(x.id)));
+    let armed = false;
+    openModal(`
+      <div class="m-head"><h3>${o?"Sửa objective":"Objective mới"}</h3><button class="icon-btn" data-close aria-label="Đóng">✕</button></div>
+      <form class="m-body" id="ob-form">
+        <div class="field"><label for="ob-title">Objective</label><input id="ob-title" type="text" required placeholder="VD: Achieve x1.3 Revenue Growth" value="${esc(d.title)}"></div>
+        <div class="grid3">
+          <div class="field"><label for="ob-level">Cấp</label><select id="ob-level">${LEVELS.map(l=>`<option ${l===d.level?"selected":""}>${l}</option>`).join("")}</select></div>
+          <div class="field"><label for="ob-team">Team / Phòng ban</label><input id="ob-team" type="text" list="team-list" value="${esc(d.team)}" placeholder="VD: Marketing"><datalist id="team-list">${teamsList().map(t=>`<option value="${esc(t)}">`).join("")}</datalist></div>
+          <div class="field"><label for="ob-owner">Owner</label><input id="ob-owner" type="text" value="${esc(d.owner)}"></div>
+        </div>
+        <div class="grid3">
+          <div class="field"><label for="ob-parent">Thuộc objective</label><select id="ob-parent"><option value="">— Không (cấp cao nhất)</option>${parents.map(p=>`<option value="${esc(p.id)}" ${p.id===(d.parentId||"")?"selected":""}>${esc(p.title.slice(0,60))}</option>`).join("")}</select></div>
+          <div class="field"><label for="ob-start">Bắt đầu</label><input id="ob-start" type="date" value="${esc(d.start)}"></div>
+          <div class="field"><label for="ob-end">Kết thúc</label><input id="ob-end" type="date" value="${esc(d.end)}"></div>
+        </div>
+        <div class="grid3" id="ob-wrow">
+          <div class="field"><label for="ob-weight" id="ob-wlabel">Tỉ trọng (%)</label><input id="ob-weight" type="number" step="any" min="0" placeholder="Chia đều" value="${hasW(d.weight)?esc(d.weight):""}"></div>
+          <div class="hint" id="ob-whint" style="grid-column:span 2;align-self:end;padding-bottom:8px"></div>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center"><span class="eyebrow">Key results</span><button type="button" class="btn" id="ob-add-kr">＋ Thêm KR</button></div>
+        <div id="ob-krs" style="display:flex;flex-direction:column;gap:10px">${(d.krs||[]).map(krRow).join("")}</div>
+        <div class="wt-sum" id="ob-wsum"></div>
+        <div class="hint"><b>Tỉ trọng:</b> nhập % cho KR quan trọng, để trống các KR còn lại thì chúng tự chia đều phần còn lại. VD KR chính 90%, 2 KR phụ để trống → mỗi KR 5%. Nếu tổng khác 100%, hệ thống tự quy đổi theo tỉ lệ. Objective không có KR sẽ lấy tiến độ từ các objective con. KR phải là <b>kết quả đo được</b>; việc cần làm (launch, xây dựng, triển khai…) hãy đưa xuống Initiative.</div>
+        <div style="display:flex;justify-content:space-between;align-items:center"><span class="eyebrow">Initiatives · không tính vào %</span><button type="button" class="btn" id="ob-add-init">＋ Thêm initiative</button></div>
+        <div id="ob-inits" style="display:flex;flex-direction:column;gap:10px"></div>
+        <div class="err" id="ob-err"></div>
+      </form>
+      <div class="m-foot">
+        ${o?`<button class="btn danger left" id="ob-del">Xoá objective</button>`:""}
+        ${o?`<button class="btn" id="ob-child">＋ Objective con</button>`:""}
+        <button class="btn" data-close>Huỷ</button><button class="btn primary" id="ob-save">${o?"Lưu":"Tạo objective"}</button></div>`);
+    const krsBox = $("#ob-krs"), initsBox = $("#ob-inits");
+    const kids = o ? childrenOf(o.id) : [];
+    const updWeights = () => {
+      const hasParent = !!$("#ob-parent").value;
+      $("#ob-wlabel").textContent = hasParent ? "Tỉ trọng trong objective cha (%)" : "Tỉ trọng trong tổng công ty (%)";
+      $("#ob-whint").textContent = hasParent ? "Objective con được chia tỉ trọng chung với các KR của objective cha." : "Dùng để tính % tiến độ chung của cả công ty ở thẻ Objectives.";
+      const rows = [...krsBox.querySelectorAll(".kr-edit")].map(r=>({name:r.querySelector('[data-f="title"]').value.trim()||"KR chưa đặt tên", w:r.querySelector('[data-f="weight"]').value}));
+      const items = [...rows, ...kids.map(c=>({name:"↳ "+c.title, w:c.weight}))];
+      if (!items.length){ $("#ob-wsum").innerHTML = ""; return; }
+      const ns = normWeights(items.map(i=>i.w));
+      const setSum = items.filter(i=>hasW(i.w)).reduce((a,i)=>a+(+i.w),0);
+      const over = setSum > 100 || (setSum < 100 && !items.some(i=>!hasW(i.w)) && setSum > 0);
+      const el = $("#ob-wsum"); el.className = "wt-sum" + (setSum > 100 ? " over" : "");
+      el.innerHTML = `<span>Tỉ trọng thực tế:</span>` + items.map((i,n)=>`<span class="wt" title="${esc(i.name)}">${esc(i.name.length>22?i.name.slice(0,22)+"…":i.name)} · ${fmtPct(ns[n])}</span>`).join("") +
+        (over ? `<span>· Tổng đã nhập ${fmtNum(setSum)}%, hệ thống quy đổi theo tỉ lệ${setSum>100?" (các ô trống = 0%)":""}.</span>` : "");
+    };
+    krsBox.addEventListener("input", updWeights);
+    $("#ob-parent").addEventListener("change", updWeights);
+    const currentKrs = () => [...krsBox.querySelectorAll(".kr-edit")].map(r=>({id:r.dataset.kr, title:r.querySelector('[data-f="title"]').value.trim()})).filter(k=>k.title);
+    const krOpts = sel => `<option value="">— Objective chung</option>` + currentKrs().map(k=>`<option value="${esc(k.id)}" ${k.id===sel?"selected":""}>${esc(k.title.slice(0,50))}</option>`).join("");
+    initsBox.innerHTML = (d.initiatives||[]).map(i=>initRow(i, krOpts)).join("");
+    initsBox.addEventListener("focusin", e => { const s = e.target.closest("[data-kr-select]"); if (s){ const v = s.value; s.innerHTML = krOpts(v); } });
+    initsBox.addEventListener("click", e => { if (e.target.closest("[data-rm-init]")) e.target.closest(".kr-edit").remove(); });
+    $("#ob-add-init").onclick = () => { initsBox.insertAdjacentHTML("beforeend", initRow({id:uid(), title:"", owner:"", krId:"", due:"", status:"todo"}, krOpts)); initsBox.lastElementChild.querySelector("input").focus(); };
+    $("#ob-add-kr").onclick = () => { krsBox.insertAdjacentHTML("beforeend", krRow({id:uid(), title:"", owner:"", start:0, target:100, unit:"%"})); krsBox.lastElementChild.querySelector("input").focus(); updWeights(); };
+    krsBox.addEventListener("click", e => { if (e.target.closest("[data-rm-kr]")){ e.target.closest(".kr-edit").remove(); updWeights(); } });
+    updWeights();
+    if (o){
+      $("#ob-child").onclick = () => objectiveModal(null, o.id);
+      $("#ob-del").onclick = async () => {
+        if (!armed){ armed = true; $("#ob-del").textContent = "Bấm lần nữa để xoá"; return; }
+        try { await state.db.doc("objectives/"+o.id).delete();
+          for (const c of childrenOf(o.id)) await state.db.doc("objectives/"+c.id).update({parentId: o.parentId||""});
+          closeModal(); toast("Đã xoá objective"); } catch(e){ $("#ob-err").textContent = writeErr(e); }
+      };
+    }
+    const save = async () => {
+      const title = $("#ob-title").value.trim();
+      if (!title){ $("#ob-err").textContent = "Objective cần có tên."; return; }
+      const old = Object.fromEntries((o?.krs||[]).map(k=>[k.id,k]));
+      const krs = [...krsBox.querySelectorAll(".kr-edit")].map(r => {
+        const g = f => r.querySelector(`[data-f="${f}"]`).value;
+        const id = r.dataset.kr, prev = old[id];
+        const start = +g("start")||0;
+        const w = g("weight");
+        return { id, title:g("title").trim(), owner:g("owner").trim(), start, target:+g("target"), unit:g("unit").trim(), weight: hasW(w) ? +w : null,
+          current: prev ? prev.current : start, confidence: prev?.confidence || null, updatedAt: prev?.updatedAt || null };
+      }).filter(k=>k.title);
+      const initiatives = [...initsBox.querySelectorAll(".kr-edit")].map(r => {
+        const g = f => r.querySelector(`[data-f="${f}"]`).value;
+        const krId = krs.some(k=>k.id===g("krId")) ? g("krId") : "";
+        return { id:r.dataset.initRow, title:g("title").trim(), owner:g("owner").trim(), krId, due:g("due")||"", status:g("status") };
+      }).filter(i=>i.title);
+      if (krs.some(k=>!isFinite(k.target))){ $("#ob-err").textContent = "Mỗi KR cần mục tiêu là một con số."; return; }
+      const body = { title, level:$("#ob-level").value, team:$("#ob-team").value.trim(), owner:$("#ob-owner").value.trim(),
+        parentId:$("#ob-parent").value, weight: hasW($("#ob-weight").value) ? +$("#ob-weight").value : null, start:$("#ob-start").value||cyStart(), end:$("#ob-end").value||cyEnd(), cycle: o ? cycleOf(o) : state.cycle,
+        krs, initiatives, order: o?.order ?? Date.now(), sample: o?.sample || false, updatedAt:new Date().toISOString() };
+      $("#ob-save").disabled = true;
+      try {
+        const ref = o ? state.db.doc("objectives/"+o.id) : state.db.collection("objectives").doc();
+        await ref.set(body);
+        if (body.parentId){ state.opened.add(body.parentId); state.collapsed.delete(body.parentId); }
+        closeModal(); toast(o?"Đã lưu objective":"Đã tạo objective");
+      } catch(e){ $("#ob-save").disabled=false; $("#ob-err").textContent = writeErr(e); }
+    };
+    $("#ob-save").onclick = save;
+    $("#ob-form").addEventListener("submit", e => { e.preventDefault(); save(); });
+  }
+
+  function kpiModal(id){
+    const k = id ? state.kpis.find(x=>x.id===id) : null;
+    const d = k || {title:"", team: state.team||"", owner:"", unit:"", target:"", direction:"higher", tolerance:10, objectiveId:"", values:[]};
+    let armed = false;
+    openModal(`
+      <div class="m-head"><h3>${k?"Sửa KPI":"KPI mới"}</h3><button class="icon-btn" data-close aria-label="Đóng">✕</button></div>
+      <form class="m-body" id="kp-form">
+        <div class="field"><label for="kp-title">Tên KPI</label><input id="kp-title" type="text" required placeholder="VD: Tỷ lệ nghỉ việc tự nguyện (năm hoá)" value="${esc(d.title)}"></div>
+        <div class="grid2">
+          <div class="field"><label for="kp-team">Team / Phòng ban</label><input id="kp-team" type="text" list="kp-team-list" value="${esc(d.team)}"><datalist id="kp-team-list">${teamsList().map(t=>`<option value="${esc(t)}">`).join("")}</datalist></div>
+          <div class="field"><label for="kp-owner">Owner</label><input id="kp-owner" type="text" value="${esc(d.owner)}"></div>
+        </div>
+        <div class="grid3">
+          <div class="field"><label for="kp-dir">Chiều tốt</label><select id="kp-dir"><option value="higher" ${d.direction!=="lower"?"selected":""}>Càng cao càng tốt (≥)</option><option value="lower" ${d.direction==="lower"?"selected":""}>Càng thấp càng tốt (≤)</option></select></div>
+          <div class="field"><label for="kp-target">Ngưỡng target</label><input id="kp-target" type="number" step="any" required value="${esc(d.target)}"></div>
+          <div class="field"><label for="kp-unit">Đơn vị</label><input id="kp-unit" type="text" placeholder="%, USD, người…" value="${esc(d.unit)}"></div>
+        </div>
+        <div class="grid2">
+          <div class="field"><label for="kp-tol">Biên "sát ngưỡng" (%)</label><input id="kp-tol" type="number" step="any" min="0" value="${esc(d.tolerance ?? 10)}"></div>
+          <div class="field"><label for="kp-obj">OKR đang cải thiện KPI này</label><select id="kp-obj"><option value="">— Không</option>${state.all.map(o=>`<option value="${esc(o.id)}" ${o.id===d.objectiveId?"selected":""}>[${cycleOf(o)}] ${esc(o.title.slice(0,56))}</option>`).join("")}</select></div>
+        </div>
+        <div class="hint">Health: Đạt khi đúng target · Sát ngưỡng khi lệch trong biên · Ngoài ngưỡng khi lệch quá biên.</div>
+        <div class="err" id="kp-err"></div>
+      </form>
+      <div class="m-foot">${k?`<button class="btn danger left" id="kp-del">Xoá KPI</button>`:""}<button class="btn" data-close>Huỷ</button><button class="btn primary" id="kp-save">${k?"Lưu":"Tạo KPI"}</button></div>`);
+    if (k) $("#kp-del").onclick = async () => {
+      if (!armed){ armed = true; $("#kp-del").textContent = "Bấm lần nữa để xoá"; return; }
+      try { await state.db.doc("kpis/"+k.id).delete(); closeModal(); toast("Đã xoá KPI"); } catch(e){ $("#kp-err").textContent = writeErr(e); }
+    };
+    const save = async () => {
+      const title = $("#kp-title").value.trim(), target = $("#kp-target").value;
+      if (!title){ $("#kp-err").textContent = "KPI cần có tên."; return; }
+      if (target === "" || !isFinite(+target)){ $("#kp-err").textContent = "Ngưỡng target phải là một con số."; return; }
+      const body = { title, team:$("#kp-team").value.trim(), owner:$("#kp-owner").value.trim(), direction:$("#kp-dir").value,
+        target:+target, unit:$("#kp-unit").value.trim(), tolerance: isFinite(+$("#kp-tol").value) ? +$("#kp-tol").value : 10,
+        objectiveId:$("#kp-obj").value, values: k?.values || [], sample: k?.sample || false, updatedAt:new Date().toISOString() };
+      $("#kp-save").disabled = true;
+      try { const ref = k ? state.db.doc("kpis/"+k.id) : state.db.collection("kpis").doc(); await ref.set(body); closeModal(); toast(k?"Đã lưu KPI":"Đã tạo KPI"); }
+      catch(e){ $("#kp-save").disabled = false; $("#kp-err").textContent = writeErr(e); }
+    };
+    $("#kp-save").onclick = save;
+    $("#kp-form").addEventListener("submit", e => { e.preventDefault(); save(); });
+  }
+
+  function kpiValueModal(id){
+    const k = state.kpis.find(x=>x.id===id); if (!k) return;
+    const vs = kpiVals(k);
+    const now = new Date(); const defPeriod = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,"0")}`;
+    openModal(`
+      <div class="m-head"><h3>Nhập số KPI</h3><button class="icon-btn" data-close aria-label="Đóng">✕</button></div>
+      <form class="m-body" id="kv-form">
+        <div><div class="eyebrow">${esc(k.team||"KPI")}</div><div style="font-weight:600;margin-top:4px">${esc(k.title)}</div>
+          <div class="hint num" style="margin-top:4px">Target ${k.direction==="lower"?"≤":"≥"} ${fmtNum(k.target)} ${esc(k.unit||"")}</div></div>
+        <div class="grid2">
+          <div class="field"><label for="kv-period">Kỳ (tháng)</label><input id="kv-period" type="month" value="${defPeriod}" required></div>
+          <div class="field"><label for="kv-val">Giá trị</label><input id="kv-val" type="number" step="any" required></div>
+        </div>
+        <div class="hint" id="kv-health"></div>
+        ${vs.length?`<div class="field"><label>Lịch sử (nhập lại cùng kỳ sẽ ghi đè)</label><div class="hist">${[...vs].reverse().map(v=>`<div><span>${fmtPeriod(v.period)}</span><span style="color:${HCOLOR[kpiHealthOf(k,+v.value)]}">${fmtNum(v.value)} ${esc(k.unit||"")}</span></div>`).join("")}</div></div>`:""}
+        <div class="err" id="kv-err"></div>
+      </form>
+      <div class="m-foot"><button class="btn" data-close>Huỷ</button><button class="btn primary" id="kv-save">Lưu số</button></div>`, true);
+    const prefill = () => { const v = vs.find(x=>x.period===$("#kv-period").value); if (v) $("#kv-val").value = v.value; };
+    const hint = () => { const v = $("#kv-val").value; const h = v===""?null:kpiHealthOf(k,+v); $("#kv-health").innerHTML = h ? `Health kỳ này: <span class="pill h-${h}">${HEALTH[h]}</span>` : ""; };
+    $("#kv-period").addEventListener("change", () => { prefill(); hint(); });
+    $("#kv-val").addEventListener("input", hint);
+    prefill(); hint(); $("#kv-val").focus();
+    const save = async () => {
+      const period = $("#kv-period").value, v = $("#kv-val").value;
+      if (!/^\d{4}-\d{2}$/.test(period)){ $("#kv-err").textContent = "Chọn tháng của số liệu."; return; }
+      if (v === "" || !isFinite(+v)){ $("#kv-err").textContent = "Nhập giá trị là một con số."; return; }
+      const values = (k.values||[]).filter(x=>x.period!==period).concat([{period, value:+v, at:new Date().toISOString()}])
+        .sort((a,b)=>String(a.period).localeCompare(String(b.period))).slice(-36);
+      $("#kv-save").disabled = true;
+      try { await state.db.doc("kpis/"+k.id).update({values, updatedAt:new Date().toISOString()}); closeModal(); toast("Đã lưu số KPI"); }
+      catch(e){ $("#kv-save").disabled = false; $("#kv-err").textContent = writeErr(e); }
+    };
+    $("#kv-save").onclick = save;
+    $("#kv-form").addEventListener("submit", e => { e.preventDefault(); save(); });
+  }
+
+  async function cycleInit(objId, initId){
+    const o = state.objectives.find(x=>x.id===objId); if (!o) return;
+    const initiatives = (o.initiatives||[]).map(i => i.id===initId ? {...i, status: ISTAT_NEXT[i.status] || "doing"} : {...i});
+    try { await state.db.doc("objectives/"+o.id).update({initiatives}); } catch(e){ toast(writeErr(e)); }
+  }
+
+  async function clearSamples(){
+    const b = $("#btn-clear-sample");
+    if (!b.dataset.armed){ b.dataset.armed = "1"; b.textContent = "Bấm lần nữa để xoá toàn bộ dữ liệu mẫu"; return; }
+    try {
+      const ids = new Set(state.all.filter(o=>o.sample).map(o=>o.id));
+      for (const id of ids) await state.db.doc("objectives/"+id).delete();
+      for (const c of state.checkins.filter(c=>c.sample || ids.has(c.objectiveId))) await state.db.doc("checkins/"+c.id).delete();
+      for (const k of state.kpis.filter(k=>k.sample)) await state.db.doc("kpis/"+k.id).delete();
+      toast("Đã xoá dữ liệu mẫu");
+    } catch(e){ toast(writeErr(e)); }
+  }
+
+  // ---------- events ----------
+  document.addEventListener("click", e => {
+    const t = e.target.closest("[data-toggle],[data-edit],[data-checkin],[data-close],[data-st],[data-team],[data-tab],[data-init],[data-kpi-val],[data-kpi-edit]");
+    if (!t) return;
+    if (t.hasAttribute("data-close")) return closeModal();
+    if (t.dataset.toggle){
+      const id = t.dataset.toggle, isOpen = t.getAttribute("aria-expanded")==="true";
+      state.allOpen = false; $("#btn-expand").textContent = "Mở tất cả";
+      if (isOpen){ state.opened.delete(id); state.collapsed.add(id); } else { state.opened.add(id); state.collapsed.delete(id); }
+      renderTree(); return;
+    }
+    if (t.dataset.edit) return objectiveModal(t.dataset.edit);
+    if (t.dataset.tab){ state.tab = t.dataset.tab; renderFilters(); renderView(); return; }
+    if (t.dataset.init){ const [o,i] = t.dataset.init.split("|"); return cycleInit(o,i); }
+    if (t.dataset.kpiVal) return kpiValueModal(t.dataset.kpiVal);
+    if (t.dataset.kpiEdit) return kpiModal(t.dataset.kpiEdit);
+    if (t.dataset.checkin){ const [o,k] = t.dataset.checkin.split("|"); return checkinModal(o,k); }
+    if (t.dataset.st !== undefined){ state.status = t.dataset.st; renderFilters(); renderView(); return; }
+    if (t.dataset.team !== undefined){ state.team = state.team===t.dataset.team ? "" : t.dataset.team; renderFilters(); renderView(); return; }
+  });
+  $("#q").addEventListener("input", e => { state.q = e.target.value.trim(); renderView(); });
+  $("#f-team").addEventListener("change", e => { state.team = e.target.value; renderView(); });
+  $("#btn-new").onclick = () => objectiveModal(null);
+  $("#btn-new-kpi").onclick = () => kpiModal(null);
+  $("#cycle").addEventListener("change", e => { state.cycle = e.target.value; try { localStorage.setItem("okr.cycle", state.cycle); } catch {} applyCycle(); state.team = ""; render(); });
+  $("#btn-expand").onclick = () => { state.allOpen = !state.allOpen; if (!state.allOpen){ state.opened = new Set(); state.collapsed = new Set(); } $("#btn-expand").textContent = state.allOpen ? "Thu gọn" : "Mở tất cả"; renderTree(); };
+
+  // ---------- data ----------
+  render();
+  (async () => {
+    const showLanding = (msg) => {
+      $("#landing").hidden = false; $("#app").hidden = true;
+      const e = $("#landing-error"); e.hidden = !msg; e.textContent = msg || "";
+    };
+    $("#btn-signin").onclick = async () => { try { await signIn(); } catch (e) { showLanding(e.message); } };
+    let db;
+    if (CONFIG.isDemo()) {
+      db = createStore({ demo: true }); state.me = "Demo user";
+    } else {
+      let account = null;
+      try { account = await initAuth(); } catch (e) { showLanding(e.message); return; }
+      if (!account) { showLanding(""); return; }
+      const me = currentAccount(); state.me = me?.name || "";
+      db = createStore({ getToken });
+    }
+    $("#landing").hidden = true; $("#app").hidden = false;
+    if (state.me) {
+      $("#user-chip").hidden = false; $("#user-name").textContent = state.me;
+      $("#user-av").textContent = state.me.split(/\s+/).filter(Boolean).slice(-2).map(w => w[0]).join("").toUpperCase();
+      $("#btn-signout").onclick = () => CONFIG.isDemo() ? location.reload() : signOut();
+      $("#btn-signout").hidden = CONFIG.isDemo();
+    }
+    state.db = db;
+    state.canWrite = true;
+    const loadErr = (e) => {
+      state.loaded = true;
+      if (e instanceof PermissionError) { state.db = null; showLanding("Tài khoản của bạn chưa có quyền truy cập dữ liệu OKR trên SharePoint (site ORG HR Admin). Liên hệ HR để được cấp quyền."); }
+      else toast("Lỗi tải dữ liệu: " + e.message);
+      render();
+    };
+    db.collection("objectives").onSnapshot(snap => {
+      state.all = snap.docs.map(d => ({id:d.id, ...d.data()})); applyCycle();
+      state.loaded = true; render();
+    }, loadErr);
+    db.collection("kpis").onSnapshot(snap => {
+      state.kpis = snap.docs.map(d => ({id:d.id, ...d.data()}));
+      render();
+    });
+    db.collection("checkins").orderBy("at","desc").limit(50).onSnapshot(snap => {
+      state.checkins = snap.docs.map(d => ({id:d.id, ...d.data()}));
+      renderFeed(); renderSummary(); renderNotice();
+    });
+  })();
+})();
+</script>
+
+</body>
+</html>
